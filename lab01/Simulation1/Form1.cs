@@ -33,6 +33,7 @@ namespace Simulation1
             numericWeight.Value = 1;
             numericStep.Value = 1.0m;
 
+            // Размер формы
             MinimumSize = new Size(800, 800);
         }
 
