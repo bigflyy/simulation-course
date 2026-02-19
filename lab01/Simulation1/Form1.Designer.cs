@@ -165,7 +165,7 @@ namespace Simulation1
             // 
             chartArea1.Name = "ChartArea1";
             chartTrajectory.ChartAreas.Add(chartArea1);
-            chartTrajectory.Dock = DockStyle.Top;
+            chartTrajectory.Dock = DockStyle.Fill;
             legend1.Name = "Legend1";
             chartTrajectory.Legends.Add(legend1);
             chartTrajectory.Location = new Point(0, 0);
@@ -238,7 +238,8 @@ namespace Simulation1
             // 
             // textBoxResults
             // 
-            textBoxResults.Dock = DockStyle.Fill;
+            textBoxResults.Dock = DockStyle.Bottom;
+            textBoxResults.Height = 120;
             textBoxResults.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             textBoxResults.Location = new Point(0, 328);
             textBoxResults.Margin = new Padding(2, 2, 2, 2);
@@ -254,9 +255,9 @@ namespace Simulation1
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(560, 420);
+            Controls.Add(chartTrajectory);
             Controls.Add(textBoxResults);
             Controls.Add(panelControls);
-            Controls.Add(chartTrajectory);
             Margin = new Padding(2, 2, 2, 2);
             Name = "Form1";
             Text = "Simulation";
