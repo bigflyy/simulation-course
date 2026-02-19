@@ -12,7 +12,7 @@ namespace Simulation1
         private void Form1_Load(object sender, EventArgs e)
         {
             // График
-            var area = chart1.ChartAreas[0];
+            var area = chartTrajectory.ChartAreas[0];
             area.AxisX.Title = "Дальность, м";
             area.AxisY.Title = "Высота, м";
             area.AxisX.Minimum = 0;
@@ -88,7 +88,7 @@ namespace Simulation1
             double finalSpeed = Math.Sqrt(vx * vx + vy * vy);
 
             // Добавляем траекторию (не убирая предыдущие) 
-            string seriesName = $"dt={dt} #{chart1.Series.Count}";
+            string seriesName = $"dt={dt} #{chartTrajectory.Series.Count}";
             var series = new Series(seriesName)
             {
                 ChartType = SeriesChartType.Line,
@@ -96,7 +96,7 @@ namespace Simulation1
             };
             for (int i = 0; i < plotX.Count; i++)
                 series.Points.AddXY(plotX[i], plotY[i]);
-            chart1.Series.Add(series);
+            chartTrajectory.Series.Add(series);
 
             // Запишем результаты
             textBoxResults.AppendText(
@@ -109,7 +109,7 @@ namespace Simulation1
 
         private void buttonClear_Click(object sender, EventArgs e)
         {
-            chart1.Series.Clear();
+            chartTrajectory.Series.Clear();
             textBoxResults.Clear();
         }
     }
