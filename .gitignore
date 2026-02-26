@@ -1,7 +1,51 @@
+# C# / .NET
 bin/
 obj/
-.vs/
+publish/
+publish-standalone/
+*.exe
+*.dll
+*.pdb
 *.cache
 *.suo
 *.user
-publish-standalone/
+*.nupkg
+*.snupkg
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+
+# Visual Studio
+.vs/
+*.rsuser
+*.sln.docstates
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+[Dd]ebugPublic/
+
+# NuGet
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Claude
+.claude/
+CLAUDE.md
