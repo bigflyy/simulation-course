@@ -257,8 +257,11 @@ namespace CellularAutomaton
                         float length = (float)Math.Sqrt(dx * dx + dy * dy); // 1 или 1.41
                         // windvector единичный так как длина его sqrt(sin^2(alpha) + cos^2(alpha)) = 1
 
-                        // Насколько направление распространения огня совпадает с ветром? [0,1]; 1 - угол равен нулю.
+                        // Насколько направление распространения огня
+                        // (вектор от клетки с огнём до соседней клетки)
+                        // совпадает с ветром? [0,1]; 1 - угол равен нулю.
                         // cos alpha = (A dot B ) / (|A| * |B|)
+                        // -dx, -dy потому что это вектор от соседней клетки, которая горит. А не от клетки к соседней 
                         float dotProduct = ((-dx * WindVector.X) + (-dy * WindVector.Y))/length;
 
                         double prob = Constants.BASE_NEIGHBOR_IGNITE_CHANCE + (dotProduct * WindStrength);

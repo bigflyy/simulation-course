@@ -31,7 +31,7 @@ $$\cos\theta = \frac{(-dx)w_x + (-dy)w_y}{\sqrt{dx^2 + dy^2}}$$
 
 ### 3.2. Динамика направления ветра
 Угол ветра изменяется случайным образом каждый такт:
-$$\alpha_{t+1} = (\alpha_t + \Delta\alpha) \mod 360^\circ$$
+$$ \alpha_{t+1} = (\alpha_t + \Delta\alpha) \mod 360^\circ $$
 $$\Delta\alpha \sim \mathcal{U}[-6^\circ, +6^\circ]$$
 
 ### 3.3. Система дождевых облаков (Спавн)
