@@ -130,10 +130,6 @@ namespace CellularAutomaton
                     {
                         _nextGrid[x, y] = CellState.Tree;
                     }
-                    else if (current == CellState.Tree && !isRaining && ShouldIgnite(x, y))
-                    {
-                        _nextGrid[x, y] = CellState.Burning;
-                    }
                     else if (current == CellState.Burning)
                     {
                         // Тушение, если идет дождь или если топливо закончилось
@@ -142,6 +138,10 @@ namespace CellularAutomaton
                             _nextGrid[x, y] = CellState.Charred;
                             _fuel[x, y] = 3; // Сброс топлива для будущих деревьев
                         }
+                    }
+                    else if (current == CellState.Tree && !isRaining && ShouldIgnite(x, y))
+                    {
+                        _nextGrid[x, y] = CellState.Burning;
                     }
                     else if (current == CellState.Charred)
                     {
@@ -248,7 +248,7 @@ namespace CellularAutomaton
                     if (dx == 0 && dy == 0) continue; // Пропуск самой клетки
 
                     int neighborX = x + dx;
-                    int neighborY = y + dy;
+                    int neighborY = y + dy;           
 
                     // Проверка границ и проверка на горение соседа
                     if (neighborX >= 0 && neighborX < Width && neighborY >= 0 && neighborY < Height &&
@@ -257,8 +257,11 @@ namespace CellularAutomaton
                         float length = (float)Math.Sqrt(dx * dx + dy * dy); // 1 или 1.41
                         // windvector единичный так как длина его sqrt(sin^2(alpha) + cos^2(alpha)) = 1
 
-                        // Насколько направление распространения огня совпадает с ветром? [0,1]; 1 - угол равен нулю.
+                        // Насколько направление распространения огня
+                        // (вектор от клетки с огнём до соседней клетки)
+                        // совпадает с ветром? [0,1]; 1 - угол равен нулю.
                         // cos alpha = (A dot B ) / (|A| * |B|)
+                        // -dx, -dy потому что это вектор от соседней клетки, которая горит. А не от клетки к соседней 
                         float dotProduct = ((-dx * WindVector.X) + (-dy * WindVector.Y))/length;
 
                         double prob = Constants.BASE_NEIGHBOR_IGNITE_CHANCE + (dotProduct * WindStrength);
@@ -371,6 +374,7 @@ namespace CellularAutomaton
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
+            // Ширина клетки в пикселях
             float cellW = (float)ClientSize.Width / _sim.Width;
             float cellH = (float)(ClientSize.Height - _controlPanel.Height) / _sim.Height;
 
@@ -396,10 +400,13 @@ namespace CellularAutomaton
             // Отрисовка облаков
             foreach (var c in _sim.Clouds)
             {
-                float cx = c.X * cellW, cy = c.Y * cellH, cr = c.Radius * cellW;
+                float cx = c.X * cellW, cy = c.Y * cellH;
+                float rx = c.Radius * cellW; // Важно, так как у нас не квадратные клетки, из-за того что монитор - не квадрат
+                float ry = c.Radius * cellH;
+
                 using (var rain = new SolidBrush(Color.FromArgb(60, 30, 60, 150)))
                 {
-                    g.FillEllipse(rain, cx - cr, cy - cr, cr * 2, cr * 2);
+                    g.FillEllipse(rain, cx - rx, cy - ry, rx * 2, ry * 2);
                 }
             }
 

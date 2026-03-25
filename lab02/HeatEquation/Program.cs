@@ -64,7 +64,6 @@ double[] Solve(double dx, double dt, List<double[]> snapshots = null,
     double A = Lambda / (dx * dx);       // коэфф. при соседних точках
     double C = Lambda / (dx * dx);       
 
-
     double B = 2 * A + Rho * Cp / dt;   // коэфф. при текущей точке
     double FCoeff = - Rho * Cp / dt;            // коэфф. при F (связь с текущей точкой на предыдущем шаге по времени)
 
