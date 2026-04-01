@@ -1,3 +1,4 @@
+
 namespace RandomEvents
 {
     public partial class Form1 : Form
