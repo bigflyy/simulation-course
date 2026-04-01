@@ -26,6 +26,12 @@ namespace RandomEvents
             btnAnswer = new Button();
             lblResult = new Label();
             tabMagicBall = new TabPage();
+            label1 = new Label();
+            nudP5 = new NumericUpDown();
+            label2 = new Label();
+            nudP6 = new NumericUpDown();
+            label3 = new Label();
+            nudP7 = new NumericUpDown();
             lblP1 = new Label();
             nudP1 = new NumericUpDown();
             lblP2 = new Label();
@@ -35,13 +41,16 @@ namespace RandomEvents
             lblP4 = new Label();
             nudP4 = new NumericUpDown();
             lblP5 = new Label();
-            lblP5Value = new Label();
+            lblP8Value = new Label();
             btnRun = new Button();
             txtResults = new TextBox();
             tabControl.SuspendLayout();
             tabYesNo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudProbability).BeginInit();
             tabMagicBall.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudP5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudP6).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudP7).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudP1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudP2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudP3).BeginInit();
@@ -139,6 +148,12 @@ namespace RandomEvents
             // 
             // tabMagicBall
             // 
+            tabMagicBall.Controls.Add(label1);
+            tabMagicBall.Controls.Add(nudP5);
+            tabMagicBall.Controls.Add(label2);
+            tabMagicBall.Controls.Add(nudP6);
+            tabMagicBall.Controls.Add(label3);
+            tabMagicBall.Controls.Add(nudP7);
             tabMagicBall.Controls.Add(lblP1);
             tabMagicBall.Controls.Add(nudP1);
             tabMagicBall.Controls.Add(lblP2);
@@ -148,7 +163,7 @@ namespace RandomEvents
             tabMagicBall.Controls.Add(lblP4);
             tabMagicBall.Controls.Add(nudP4);
             tabMagicBall.Controls.Add(lblP5);
-            tabMagicBall.Controls.Add(lblP5Value);
+            tabMagicBall.Controls.Add(lblP8Value);
             tabMagicBall.Controls.Add(btnRun);
             tabMagicBall.Controls.Add(txtResults);
             tabMagicBall.Location = new Point(4, 34);
@@ -158,6 +173,72 @@ namespace RandomEvents
             tabMagicBall.Size = new Size(772, 638);
             tabMagicBall.TabIndex = 1;
             tabMagicBall.Text = "Задание 5.2 - Шар предсказаний";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(25, 178);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(195, 25);
+            label1.TabIndex = 12;
+            label1.Text = "p5 (Определённо нет):";
+            // 
+            // nudP5
+            // 
+            nudP5.DecimalPlaces = 3;
+            nudP5.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            nudP5.Location = new Point(325, 178);
+            nudP5.Margin = new Padding(4);
+            nudP5.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
+            nudP5.Name = "nudP5";
+            nudP5.Size = new Size(100, 31);
+            nudP5.TabIndex = 13;
+            nudP5.Value = new decimal(new int[] { 125, 0, 0, 196608 });
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(25, 218);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(169, 25);
+            label2.TabIndex = 14;
+            label2.Text = "p6 (Спроси позже):";
+            // 
+            // nudP6
+            // 
+            nudP6.DecimalPlaces = 3;
+            nudP6.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            nudP6.Location = new Point(325, 218);
+            nudP6.Margin = new Padding(4);
+            nudP6.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
+            nudP6.Name = "nudP6";
+            nudP6.Size = new Size(100, 31);
+            nudP6.TabIndex = 15;
+            nudP6.Value = new decimal(new int[] { 125, 0, 0, 196608 });
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(25, 258);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(199, 25);
+            label3.TabIndex = 16;
+            label3.Text = "p7 (И не рассчитывай):";
+            // 
+            // nudP7
+            // 
+            nudP7.DecimalPlaces = 3;
+            nudP7.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            nudP7.Location = new Point(325, 256);
+            nudP7.Margin = new Padding(4);
+            nudP7.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
+            nudP7.Name = "nudP7";
+            nudP7.Size = new Size(100, 31);
+            nudP7.TabIndex = 17;
+            nudP7.Value = new decimal(new int[] { 125, 0, 0, 196608 });
             // 
             // lblP1
             // 
@@ -171,7 +252,7 @@ namespace RandomEvents
             // 
             // nudP1
             // 
-            nudP1.DecimalPlaces = 2;
+            nudP1.DecimalPlaces = 3;
             nudP1.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP1.Location = new Point(325, 19);
             nudP1.Margin = new Padding(4);
@@ -179,7 +260,7 @@ namespace RandomEvents
             nudP1.Name = "nudP1";
             nudP1.Size = new Size(100, 31);
             nudP1.TabIndex = 1;
-            nudP1.Value = new decimal(new int[] { 20, 0, 0, 131072 });
+            nudP1.Value = new decimal(new int[] { 125, 0, 0, 196608 });
             // 
             // lblP2
             // 
@@ -193,7 +274,7 @@ namespace RandomEvents
             // 
             // nudP2
             // 
-            nudP2.DecimalPlaces = 2;
+            nudP2.DecimalPlaces = 3;
             nudP2.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP2.Location = new Point(325, 59);
             nudP2.Margin = new Padding(4);
@@ -201,7 +282,7 @@ namespace RandomEvents
             nudP2.Name = "nudP2";
             nudP2.Size = new Size(100, 31);
             nudP2.TabIndex = 3;
-            nudP2.Value = new decimal(new int[] { 20, 0, 0, 131072 });
+            nudP2.Value = new decimal(new int[] { 125, 0, 0, 196608 });
             // 
             // lblP3
             // 
@@ -215,7 +296,7 @@ namespace RandomEvents
             // 
             // nudP3
             // 
-            nudP3.DecimalPlaces = 2;
+            nudP3.DecimalPlaces = 3;
             nudP3.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP3.Location = new Point(325, 99);
             nudP3.Margin = new Padding(4);
@@ -223,12 +304,12 @@ namespace RandomEvents
             nudP3.Name = "nudP3";
             nudP3.Size = new Size(100, 31);
             nudP3.TabIndex = 5;
-            nudP3.Value = new decimal(new int[] { 20, 0, 0, 131072 });
+            nudP3.Value = new decimal(new int[] { 125, 0, 0, 196608 });
             // 
             // lblP4
             // 
             lblP4.AutoSize = true;
-            lblP4.Location = new Point(25, 142);
+            lblP4.Location = new Point(25, 139);
             lblP4.Margin = new Padding(4, 0, 4, 0);
             lblP4.Name = "lblP4";
             lblP4.Size = new Size(161, 25);
@@ -237,7 +318,7 @@ namespace RandomEvents
             // 
             // nudP4
             // 
-            nudP4.DecimalPlaces = 2;
+            nudP4.DecimalPlaces = 3;
             nudP4.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP4.Location = new Point(325, 139);
             nudP4.Margin = new Padding(4);
@@ -245,32 +326,32 @@ namespace RandomEvents
             nudP4.Name = "nudP4";
             nudP4.Size = new Size(100, 31);
             nudP4.TabIndex = 7;
-            nudP4.Value = new decimal(new int[] { 20, 0, 0, 131072 });
+            nudP4.Value = new decimal(new int[] { 125, 0, 0, 196608 });
             // 
             // lblP5
             // 
             lblP5.AutoSize = true;
-            lblP5.Location = new Point(25, 182);
+            lblP5.Location = new Point(25, 294);
             lblP5.Margin = new Padding(4, 0, 4, 0);
             lblP5.Name = "lblP5";
-            lblP5.Size = new Size(195, 25);
+            lblP5.Size = new Size(216, 25);
             lblP5.TabIndex = 8;
-            lblP5.Text = "p5 (Определённо нет):";
+            lblP5.Text = "p8 (Очень сомнительно):";
             // 
-            // lblP5Value
+            // lblP8Value
             // 
-            lblP5Value.AutoSize = true;
-            lblP5Value.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblP5Value.Location = new Point(325, 182);
-            lblP5Value.Margin = new Padding(4, 0, 4, 0);
-            lblP5Value.Name = "lblP5Value";
-            lblP5Value.Size = new Size(47, 25);
-            lblP5Value.TabIndex = 9;
-            lblP5Value.Text = "0.20";
+            lblP8Value.AutoSize = true;
+            lblP8Value.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblP8Value.Location = new Point(325, 294);
+            lblP8Value.Margin = new Padding(4, 0, 4, 0);
+            lblP8Value.Name = "lblP8Value";
+            lblP8Value.Size = new Size(57, 25);
+            lblP8Value.TabIndex = 9;
+            lblP8Value.Text = "0.125";
             // 
             // btnRun
             // 
-            btnRun.Location = new Point(25, 230);
+            btnRun.Location = new Point(25, 362);
             btnRun.Margin = new Padding(4);
             btnRun.Name = "btnRun";
             btnRun.Size = new Size(200, 50);
@@ -281,7 +362,7 @@ namespace RandomEvents
             // txtResults
             // 
             txtResults.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
-            txtResults.Location = new Point(25, 300);
+            txtResults.Location = new Point(19, 477);
             txtResults.Margin = new Padding(4);
             txtResults.Multiline = true;
             txtResults.Name = "txtResults";
@@ -306,6 +387,9 @@ namespace RandomEvents
             ((System.ComponentModel.ISupportInitialize)nudProbability).EndInit();
             tabMagicBall.ResumeLayout(false);
             tabMagicBall.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudP5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudP6).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudP7).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudP1).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudP2).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudP3).EndInit();
@@ -337,8 +421,14 @@ namespace RandomEvents
         private NumericUpDown nudP2;
         private NumericUpDown nudP3;
         private NumericUpDown nudP4;
-        private Label lblP5Value;
+        private Label lblP8Value;
         private Button btnRun;
         private TextBox txtResults;
+        private Label label1;
+        private NumericUpDown nudP5;
+        private Label label2;
+        private NumericUpDown nudP6;
+        private Label label3;
+        private NumericUpDown nudP7;
     }
 }
