@@ -54,7 +54,7 @@ namespace RandomEvents
             tabControl.Controls.Add(tabMagicBall);
             tabControl.Dock = DockStyle.Fill;
             tabControl.Location = new Point(0, 0);
-            tabControl.Margin = new Padding(4, 4, 4, 4);
+            tabControl.Margin = new Padding(4);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
             tabControl.Size = new Size(780, 676);
@@ -69,9 +69,9 @@ namespace RandomEvents
             tabYesNo.Controls.Add(btnAnswer);
             tabYesNo.Controls.Add(lblResult);
             tabYesNo.Location = new Point(4, 34);
-            tabYesNo.Margin = new Padding(4, 4, 4, 4);
+            tabYesNo.Margin = new Padding(4);
             tabYesNo.Name = "tabYesNo";
-            tabYesNo.Padding = new Padding(15, 15, 15, 15);
+            tabYesNo.Padding = new Padding(15);
             tabYesNo.Size = new Size(772, 638);
             tabYesNo.TabIndex = 0;
             tabYesNo.Text = "Задание 5.1 - Да или Нет";
@@ -89,10 +89,11 @@ namespace RandomEvents
             // txtQuestion
             // 
             txtQuestion.Location = new Point(25, 56);
-            txtQuestion.Margin = new Padding(4, 4, 4, 4);
+            txtQuestion.Margin = new Padding(4);
             txtQuestion.Name = "txtQuestion";
             txtQuestion.Size = new Size(499, 31);
             txtQuestion.TabIndex = 1;
+            txtQuestion.Text = "Жив ли кот Шрёдингера?";
             // 
             // lblProbability
             // 
@@ -109,7 +110,7 @@ namespace RandomEvents
             nudProbability.DecimalPlaces = 2;
             nudProbability.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudProbability.Location = new Point(25, 138);
-            nudProbability.Margin = new Padding(4, 4, 4, 4);
+            nudProbability.Margin = new Padding(4);
             nudProbability.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
             nudProbability.Name = "nudProbability";
             nudProbability.Size = new Size(125, 31);
@@ -119,7 +120,7 @@ namespace RandomEvents
             // btnAnswer
             // 
             btnAnswer.Location = new Point(25, 194);
-            btnAnswer.Margin = new Padding(4, 4, 4, 4);
+            btnAnswer.Margin = new Padding(4);
             btnAnswer.Name = "btnAnswer";
             btnAnswer.Size = new Size(150, 50);
             btnAnswer.TabIndex = 4;
@@ -151,9 +152,9 @@ namespace RandomEvents
             tabMagicBall.Controls.Add(btnRun);
             tabMagicBall.Controls.Add(txtResults);
             tabMagicBall.Location = new Point(4, 34);
-            tabMagicBall.Margin = new Padding(4, 4, 4, 4);
+            tabMagicBall.Margin = new Padding(4);
             tabMagicBall.Name = "tabMagicBall";
-            tabMagicBall.Padding = new Padding(15, 15, 15, 15);
+            tabMagicBall.Padding = new Padding(15);
             tabMagicBall.Size = new Size(772, 638);
             tabMagicBall.TabIndex = 1;
             tabMagicBall.Text = "Задание 5.2 - Шар предсказаний";
@@ -173,7 +174,7 @@ namespace RandomEvents
             nudP1.DecimalPlaces = 2;
             nudP1.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP1.Location = new Point(325, 19);
-            nudP1.Margin = new Padding(4, 4, 4, 4);
+            nudP1.Margin = new Padding(4);
             nudP1.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
             nudP1.Name = "nudP1";
             nudP1.Size = new Size(100, 31);
@@ -195,7 +196,7 @@ namespace RandomEvents
             nudP2.DecimalPlaces = 2;
             nudP2.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP2.Location = new Point(325, 59);
-            nudP2.Margin = new Padding(4, 4, 4, 4);
+            nudP2.Margin = new Padding(4);
             nudP2.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
             nudP2.Name = "nudP2";
             nudP2.Size = new Size(100, 31);
@@ -217,7 +218,7 @@ namespace RandomEvents
             nudP3.DecimalPlaces = 2;
             nudP3.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP3.Location = new Point(325, 99);
-            nudP3.Margin = new Padding(4, 4, 4, 4);
+            nudP3.Margin = new Padding(4);
             nudP3.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
             nudP3.Name = "nudP3";
             nudP3.Size = new Size(100, 31);
@@ -239,7 +240,7 @@ namespace RandomEvents
             nudP4.DecimalPlaces = 2;
             nudP4.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             nudP4.Location = new Point(325, 139);
-            nudP4.Margin = new Padding(4, 4, 4, 4);
+            nudP4.Margin = new Padding(4);
             nudP4.Maximum = new decimal(new int[] { 100, 0, 0, 131072 });
             nudP4.Name = "nudP4";
             nudP4.Size = new Size(100, 31);
@@ -266,22 +267,22 @@ namespace RandomEvents
             lblP5Value.Size = new Size(47, 25);
             lblP5Value.TabIndex = 9;
             lblP5Value.Text = "0.20";
-            //
+            // 
             // btnRun
-            //
+            // 
             btnRun.Location = new Point(25, 230);
-            btnRun.Margin = new Padding(4, 4, 4, 4);
+            btnRun.Margin = new Padding(4);
             btnRun.Name = "btnRun";
             btnRun.Size = new Size(200, 50);
             btnRun.TabIndex = 10;
             btnRun.Text = "Предсказание";
             btnRun.UseVisualStyleBackColor = true;
-            //
+            // 
             // txtResults
-            //
+            // 
             txtResults.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
             txtResults.Location = new Point(25, 300);
-            txtResults.Margin = new Padding(4, 4, 4, 4);
+            txtResults.Margin = new Padding(4);
             txtResults.Multiline = true;
             txtResults.Name = "txtResults";
             txtResults.ReadOnly = true;
@@ -295,7 +296,7 @@ namespace RandomEvents
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 676);
             Controls.Add(tabControl);
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Лаб. 05 - Случайные события";

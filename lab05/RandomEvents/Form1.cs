@@ -35,6 +35,7 @@ namespace RandomEvents
 
             // Да/Нет — частный случай полной группы из 2 событий: {p, 1-p}
             double alpha = rng.NextDouble();
+            //                           inline создание массива 
             int k = SelectEvent(alpha, new[] { p, 1.0 - p });
 
             if (k == 0)
@@ -70,6 +71,15 @@ namespace RandomEvents
             probs[1] = (double)nudP2.Value;
             probs[2] = (double)nudP3.Value;
             probs[3] = (double)nudP4.Value;
+
+            // Проверка: сумма вероятностей не должна превышать 1
+            double sum = probs[0] + probs[1] + probs[2] + probs[3];
+            if (sum > 1.0)
+            {
+                txtResults.Text = "Ошибка: sum(p_i) > 1";
+                return;
+            }
+
             probs[4] = Math.Max(0, 1.0 - probs[0] - probs[1] - probs[2] - probs[3]);
 
             // Генерируем одно предсказание
