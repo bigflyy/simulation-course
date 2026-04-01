@@ -11,7 +11,10 @@ namespace RandomEvents
             "Вероятно да",
             "Возможно",
             "Вероятно нет",
-            "Определённо нет"
+            "Определённо нет",
+            "Спроси позже",
+            "И не рассчитывай",
+            "Очень сомнительно"
         };
 
         public Form1()
@@ -25,6 +28,9 @@ namespace RandomEvents
             nudP2.ValueChanged += ProbabilityChanged;
             nudP3.ValueChanged += ProbabilityChanged;
             nudP4.ValueChanged += ProbabilityChanged;
+            nudP5.ValueChanged += ProbabilityChanged;
+            nudP6.ValueChanged += ProbabilityChanged;
+            nudP7.ValueChanged += ProbabilityChanged;
         }
 
         // ===== Задание 5.1: Да или Нет =====
@@ -55,32 +61,38 @@ namespace RandomEvents
         // Пересчитываем p5 при изменении любой вероятности
         private void ProbabilityChanged(object? sender, EventArgs e)
         {
-            double sum = (double)(nudP1.Value + nudP2.Value + nudP3.Value + nudP4.Value);
-            double p5 = Math.Max(0, 1.0 - sum);
-            lblP5Value.Text = p5.ToString("F2");
+            double sum = (double)(nudP1.Value + nudP2.Value + nudP3.Value + nudP4.Value + nudP5.Value +
+                                  nudP6.Value + nudP7.Value);
+
+            double p8 = Math.Max(0, 1.0 - sum);
+            lblP8Value.Text = p8.ToString("F2");
 
             // Красный цвет если сумма превышает 1
-            lblP5Value.ForeColor = sum > 1.0 ? Color.Red : Color.Black;
+            lblP8Value.ForeColor = sum > 1.0 ? Color.Red : Color.Black;
         }
 
         private void BtnRun_Click(object? sender, EventArgs e)
         {
             // Собираем вероятности, p5 = 1 - сумма остальных
-            double[] probs = new double[5];
+            double[] probs = new double[8];
             probs[0] = (double)nudP1.Value;
             probs[1] = (double)nudP2.Value;
             probs[2] = (double)nudP3.Value;
             probs[3] = (double)nudP4.Value;
+            probs[4] = (double)nudP5.Value;
+            probs[5] = (double)nudP6.Value;
+            probs[6] = (double)nudP7.Value;
+
 
             // Проверка: сумма вероятностей не должна превышать 1
-            double sum = probs[0] + probs[1] + probs[2] + probs[3];
+            double sum = probs[0] + probs[1] + probs[2] + probs[3] + probs[4] + probs[5] + probs[6];
             if (sum > 1.0)
             {
                 txtResults.Text = "Ошибка: sum(p_i) > 1";
                 return;
             }
 
-            probs[4] = Math.Max(0, 1.0 - probs[0] - probs[1] - probs[2] - probs[3]);
+            probs[7] = Math.Max(0, 1.0 - probs[0] - probs[1] - probs[2] - probs[3]);
 
             // Генерируем одно предсказание
             double alpha = rng.NextDouble();
