@@ -8,10 +8,10 @@ using LiveCharts.Wpf;
 
 namespace SimulationLabs
 {
-    /// <summary>
+
     /// Лабораторная работа 9: СМО M/M/1/0 (система с потерями).
     /// Если сервер занят — новый запрос отказывается (нет очереди).
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         private readonly Random rand = new Random();
@@ -97,10 +97,10 @@ namespace SimulationLabs
             lblStatus.Text = $"Готово. λ={lambda}, μ={mu}, N={N}";
         }
 
-        /// <summary>
+    
         /// Симуляция M/M/1/0: система с потерями, без очереди.
         /// N независимых заявок — считаем, сколько были обслужены, сколько отказаны.
-        /// </summary>
+    
         private void Simulate(double lambda, double mu, int N)
         {
             double rho = lambda / mu;
