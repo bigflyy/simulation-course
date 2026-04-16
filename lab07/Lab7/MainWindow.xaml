@@ -1,0 +1,238 @@
+<Window x:Class="SimulationLabs.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        Title="Лабораторная работа 7 — Марковская модель погоды"
+        Width="1400" Height="850"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="1100" MinHeight="700">
+
+    <Window.Resources>
+        <Style x:Key="MatrixCell" TargetType="TextBox">
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style x:Key="MatrixCellReadOnly" TargetType="TextBox">
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Background" Value="#F0F0F0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Foreground" Value="#888"/>
+        </Style>
+        <Style x:Key="ControlButton" TargetType="Button">
+            <Setter Property="Width" Value="90"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style x:Key="HistoryItemStyle" TargetType="Border">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E0E8FF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ==================== ВЕРХНЯЯ ПАНЕЛЬ: МАТРИЦА Q + ТЕОРЕТИЧЕСКОЕ π ==================== -->
+        <GroupBox Grid.Row="0" Header="Матрица интенсивностей Q (генератор)" Padding="10" Margin="0,0,0,5">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Матрица 3x3 -->
+                <Grid Margin="0,0,20,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="txtQ00" Grid.Row="0" Grid.Column="0" Style="{StaticResource MatrixCellReadOnly}"/>
+                    <TextBox x:Name="txtQ01" Grid.Row="0" Grid.Column="1" Style="{StaticResource MatrixCell}" Text="0.3" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                    <TextBox x:Name="txtQ02" Grid.Row="0" Grid.Column="2" Style="{StaticResource MatrixCell}" Text="0.1" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                    <TextBox x:Name="txtQ10" Grid.Row="1" Grid.Column="0" Style="{StaticResource MatrixCell}" Text="0.2" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                    <TextBox x:Name="txtQ11" Grid.Row="1" Grid.Column="1" Style="{StaticResource MatrixCellReadOnly}"/>
+                    <TextBox x:Name="txtQ12" Grid.Row="1" Grid.Column="2" Style="{StaticResource MatrixCell}" Text="0.4" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                    <TextBox x:Name="txtQ20" Grid.Row="2" Grid.Column="0" Style="{StaticResource MatrixCell}" Text="0.1" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                    <TextBox x:Name="txtQ21" Grid.Row="2" Grid.Column="1" Style="{StaticResource MatrixCell}" Text="0.2" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                    <TextBox x:Name="txtQ22" Grid.Row="2" Grid.Column="2" Style="{StaticResource MatrixCellReadOnly}"/>
+                </Grid>
+
+                <!-- Подписи состояний и выбор начального -->
+                <StackPanel VerticalAlignment="Center" Margin="10,0">
+                    <TextBlock Text="1 — Ясно (☀)" FontSize="13" Margin="0,2"/>
+                    <TextBlock Text="2 — Облачно (⛅)" FontSize="13" Margin="0,2"/>
+                    <TextBlock Text="3 — Пасмурно (☁)" FontSize="13" Margin="0,2"/>
+                    <TextBlock Text="" FontSize="4" Margin="0,2"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,2">
+                        <TextBlock Text="Старт:" Width="40" VerticalAlignment="Center" FontSize="12" FontWeight="Bold"/>
+                        <ComboBox x:Name="cmbStartState" Width="90" SelectedIndex="0" FontSize="12">
+                            <ComboBoxItem Content="1 (Ясно)"/>
+                            <ComboBoxItem Content="2 (Облачно)"/>
+                            <ComboBoxItem Content="3 (Пасмурно)"/>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Теоретическое стационарное распределение (общее для обоих алгоритмов) -->
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20,0">
+                    <TextBlock Text="Теоретическое стационарное π:" FontSize="13" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="lblTheo1" Text="π₁ = —" FontSize="13" Margin="0,2"/>
+                    <TextBlock x:Name="lblTheo2" Text="π₂ = —" FontSize="13" Margin="0,2"/>
+                    <TextBlock x:Name="lblTheo3" Text="π₃ = —" FontSize="13" Margin="0,2"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- ==================== ОСНОВНАЯ ОБЛАСТЬ ==================== -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ЛЕВАЯ ПАНЕЛЬ: История состояний (только алгоритм 2) -->
+            <GroupBox Grid.Column="0" Header="История состояний" Padding="5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel x:Name="pnlHistory" Orientation="Vertical">
+                        <TextBlock x:Name="lblNoHistory" Text="Запустите симуляцию..."
+                                   FontStyle="Italic" Foreground="#999"
+                                   HorizontalAlignment="Center" Margin="0,20"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </GroupBox>
+
+            <!-- Разделитель -->
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#DDD"/>
+
+            <!-- ПРАВАЯ ПАНЕЛЬ: Вкладки алгоритмов -->
+            <TabControl Grid.Column="2">
+
+                <!-- Вкладка 1: Алгоритм 1 — частоты конечных состояний -->
+                <TabItem Header="Алгоритм 1: частоты конечных состояний">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Управление batch-симуляцией -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock Text="T (дни на запуск):" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="13"/>
+                            <TextBox x:Name="txtAlg1T" Width="70" Text="365" FontSize="13" Padding="3" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                            <TextBlock Text="N (запусков):" VerticalAlignment="Center" Margin="15,0,5,0" FontSize="13"/>
+                            <TextBox x:Name="txtAlg1N" Width="80" Text="1000" FontSize="13" Padding="3" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                            <Button x:Name="btnAlg1Run" Content="▶ Запустить" Width="130" Height="32" Margin="15,0,0,0"
+                                    FontSize="13" Click="BtnAlg1Run_Click" Background="#90EE90"/>
+                            <TextBlock x:Name="lblAlg1Status" Text="" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="12" Foreground="#555"/>
+                        </StackPanel>
+
+                        <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" Background="#DDD"/>
+
+                        <!-- График -->
+                        <lvc:CartesianChart x:Name="chartAlg1" Grid.Row="2" LegendLocation="Right" DisableAnimations="True" DataTooltip="{x:Null}">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Состояние" Labels="Ясно, Облачно, Пасмурно"/>
+                            </lvc:CartesianChart.AxisX>
+                        </lvc:CartesianChart>
+
+                        <!-- Эмпирические результаты алгоритма 1 -->
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5">
+                            <TextBlock Text="Эмпирические:" FontSize="13" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock x:Name="lblAlg1Emp1" Text="Ясно: —" FontSize="12" Margin="5,0"/>
+                            <TextBlock x:Name="lblAlg1Emp2" Text="Облачно: —" FontSize="12" Margin="5,0"/>
+                            <TextBlock x:Name="lblAlg1Emp3" Text="Пасмурно: —" FontSize="12" Margin="5,0"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- Вкладка 2: Алгоритм 2 — доля времени (реальное время) -->
+                <TabItem Header="Алгоритм 2: доля времени">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Управление симуляцией -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5" VerticalAlignment="Center">
+                            <!-- Параметры -->
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal" Margin="0,2">
+                                    <TextBlock Text="Дней:" Width="50" VerticalAlignment="Center" FontSize="12"/>
+                                    <TextBox x:Name="txtSimDays" Width="60" Text="365" FontSize="12" Padding="2" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,2">
+                                    <TextBlock Text="Скор.мс:" Width="50" VerticalAlignment="Center" FontSize="12"/>
+                                    <TextBox x:Name="txtSpeed" Width="60" Text="50" FontSize="12" Padding="2" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Кнопки -->
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10,0">
+                                <Button x:Name="btnStart" Content="▶ Старт" Style="{StaticResource ControlButton}" Click="BtnStart_Click" Background="#90EE90"/>
+                                <Button x:Name="btnStop" Content="⏸ Стоп" Style="{StaticResource ControlButton}" Click="BtnStop_Click" IsEnabled="False" Background="#FFB6C1"/>
+                            </StackPanel>
+
+                            <!-- Текущее состояние -->
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="15,0" HorizontalAlignment="Center">
+                                <Image x:Name="imgCurrentState" Width="48" Height="48" Margin="0,0,0,3"/>
+                                <TextBlock x:Name="lblCurrentState" Text="—" FontSize="12" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="lblCurrentDay" Text="День: 0.00" FontSize="11" HorizontalAlignment="Center" Foreground="#555"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" Background="#DDD"/>
+
+                        <!-- График -->
+                        <lvc:CartesianChart x:Name="chartAlg2" Grid.Row="2" LegendLocation="Right" DisableAnimations="True" DataTooltip="{x:Null}">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Состояние" Labels="Ясно, Облачно, Пасмурно"/>
+                            </lvc:CartesianChart.AxisX>
+                        </lvc:CartesianChart>
+
+                        <!-- Доли времени -->
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5">
+                            <TextBlock Text="Доли времени:" FontSize="13" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock x:Name="lblAlg2Pct1" Text="Ясно: —%" FontSize="12" Margin="5,0"/>
+                            <TextBlock x:Name="lblAlg2Pct2" Text="Облачно: —%" FontSize="12" Margin="5,0"/>
+                            <TextBlock x:Name="lblAlg2Pct3" Text="Пасмурно: —%" FontSize="12" Margin="5,0"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+        <!-- ==================== НИЖНЯЯ ПАНЕЛЬ ==================== -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+            <Button x:Name="btnExportCSV" Content="📥 Экспорт CSV" Style="{StaticResource ControlButton}"
+                    Click="BtnExportCSV_Click" Width="130" Background="#FFE4B5"/>
+        </StackPanel>
+    </Grid>
+</Window>
