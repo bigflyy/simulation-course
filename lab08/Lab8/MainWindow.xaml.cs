@@ -1,11 +1,12 @@
+using LiveCharts;
+using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using LiveCharts;
-using LiveCharts.Wpf;
+using System.Windows.Media;
 
 namespace SimulationLabs
 {
@@ -43,9 +44,9 @@ namespace SimulationLabs
             });
         }
 
-        /// <summary>
+
         /// Безопасный разбор строки в double.
-        /// </summary>
+
         private double ParseSafe(string text)
         {
             if (double.TryParse(text, out var val)) return val;
@@ -81,9 +82,9 @@ namespace SimulationLabs
             lblStatus.Text = $"Готово. λ={lambda}, T={T}, N={N}";
         }
 
-        /// <summary>
+
         /// Ядро симуляции: N независимых экспериментов, подсчёт запросов за время T.
-        /// </summary>
+
         private void Simulate(double lambda, double T, int N)
         {
             // Массив для подсчёта частот: counts[k] = сколько экспериментов дали ровно k запросов
@@ -96,14 +97,16 @@ namespace SimulationLabs
                 double time = 0;
 
                 // Генерируем интервалы между запросами ~ Exp(λ)
-                while (true)
+                while (time < T)
                 {
                     double u = Math.Max(rand.NextDouble(), 1e-10);
                     double interArrival = -Math.Log(u) / lambda;
+
                     time += interArrival;
 
-                    if (time > T) break; // запрос не укладывается в интервал [0, T]
-                    requestCount++;
+                    // Считаем запрос, только если он уложился в интервал [0, T]
+                    if (time <= T)
+                        requestCount++;
                 }
 
                 allCounts.Add(requestCount);
@@ -125,15 +128,20 @@ namespace SimulationLabs
             // Теоретическое распределение Пуассона: P(k) = (λT)^k · e^(-λT) / k!
             var theoDist = new Dictionary<int, double>();
             int maxK = counts.Keys.Max();
-            // Показываем до maxK + 5 для полноты картины
-            int rangeK = Math.Max(maxK + 5, (int)Math.Ceiling(theoLambdaT * 2));
+            // P(0) = e^(-λT)
+            double pk = Math.Exp(-theoLambdaT);
+            theoDist[0] = pk;
 
-            double logLambdaT = Math.Log(theoLambdaT);
-            for (int k = 0; k <= rangeK; k++)
+
+            // покрываем на 10 больше, посмотреть теоретические значения 
+            // или 3 сигмы, смотря что больше, чтобы покрыть как можно больше значений 
+            int maxTheoreticalK = Math.Max(maxK + 10, (int)(theoLambdaT * 3));
+
+            // Рекуррентно: P(k) = P(k-1) * λT / k
+            for (int k = 1; k <= maxTheoreticalK; k++)
             {
-                // log(P(k)) = k·ln(λT) - λT - ln(k!)
-                double logPk = k * logLambdaT - theoLambdaT - LogFactorial(k);
-                theoDist[k] = Math.Exp(logPk);
+                pk *= theoLambdaT / k;
+                theoDist[k] = pk;
             }
 
             // Обновляем UI
@@ -173,10 +181,9 @@ namespace SimulationLabs
             });
         }
 
-        /// <summary>
+
         /// Обновление графика: гистограмма с фиксированным числом бинов.
         /// Диапазон k адаптируется, бинов всегда 20.
-        /// </summary>
         private const int NumBins = 20;
 
         private void UpdateChart(Dictionary<int, int> counts, Dictionary<int, double> theoDist, int N, double theoLambdaT)
@@ -243,9 +250,8 @@ namespace SimulationLabs
             }
         }
 
-        /// <summary>
+
         /// Вычисляет ln(n!) через сумму логарифмов (без переполнения).
-        /// </summary>
         private static double LogFactorial(int n)
         {
             double sum = 0;
@@ -253,15 +259,47 @@ namespace SimulationLabs
                 sum += Math.Log(i);
             return sum;
         }
-    }
 
-    /// <summary>
-    /// Строка для таблицы частот.
-    /// </summary>
-    public class FreqRow
-    {
-        public int K { get; set; }
-        public string Empirical { get; set; } = "";
-        public string Theoretical { get; set; } = "";
+
+        // ======================== ДЕМО: ОДИН ЗАПУСК ========================
+        private void BtnDemoRun_Click(object sender, RoutedEventArgs e)
+        {
+            double lambda = ParseSafe(txtLambda.Text);
+            double T = ParseSafe(txtDemoT.Text);
+
+            if (lambda <= 0 || T <= 0)
+            {
+                lblDemoResult.Text = "ошибка";
+                lblDemoResult.Foreground = Brushes.Red;
+                return;
+            }
+
+            // Моделируем один интервал [0, T]
+            int count = 0;
+            double time = 0;
+
+            while (time < T)
+            {
+                double u = Math.Max(rand.NextDouble(), 1e-10);
+                double interArrival = -Math.Log(u) / lambda;
+                time += interArrival;
+
+                // Считаем запрос, только если он уложился в интервал
+                if (time <= T)
+                    count++;
+            }
+
+            // Показываем результат
+            lblDemoResult.Text = $"{count} запросов";
+            lblDemoResult.Foreground = Brushes.DarkBlue;
+        }
+
+        /// Строка для таблицы частот.
+        public class FreqRow
+        {
+            public int K { get; set; }
+            public string Empirical { get; set; } = "";
+            public string Theoretical { get; set; } = "";
+        }
     }
 }
