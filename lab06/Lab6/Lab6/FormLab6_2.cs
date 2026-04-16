@@ -83,6 +83,45 @@ namespace SimulationLabs
             tb = new TextBox { Location = new Point(x + 120, y - 3), Size = new Size(110, 20), Text = defVal };
             p.Controls.Add(tb);
         }
+        private double GetChiSquareCriticalValue(int df)
+        {
+            // Критические значения для Хи квадрат распределение при уровне значимости = 0.05
+            switch (df)
+            {
+                case 1: return 3.841;
+                case 2: return 5.991;
+                case 3: return 7.815;
+                case 4: return 9.488;
+                case 5: return 11.070;
+                case 6: return 12.592;
+                case 7: return 14.067;
+                case 8: return 15.507;
+                case 9: return 16.919;
+                case 10: return 18.307;
+                case 11: return 19.675;
+                case 12: return 21.026;
+                case 13: return 22.362;
+                case 14: return 23.685;
+                case 15: return 24.996;
+                case 16: return 26.296;
+                case 17: return 27.587;
+                case 18: return 28.869;
+                case 19: return 30.144;
+                case 20: return 31.410;
+                case 21: return 32.671;
+                case 22: return 33.924;
+                case 23: return 35.172;
+                case 24: return 36.415;
+                case 25: return 37.652;
+                case 26: return 38.885;
+                case 27: return 40.113;
+                case 28: return 41.337;
+                case 29: return 42.557;
+                case 30: return 43.773;
+                default:
+                    return -1;
+            }
+        }
 
         private void BtnStart_Click(object sender, EventArgs e)
         {
@@ -94,7 +133,8 @@ namespace SimulationLabs
                 double sigma = Math.Sqrt(variance);
                 if (!int.TryParse(txtN.Text, out int N) || N <= 0) throw new Exception("N должно быть положительным");
 
-                // 1. Генерация (Бокс-Мюллер)
+                // 1. Генерация случайных величин распределенных в соответсвии с нормальным законом
+                // (Бокс-Мюллер)
                 Random rand = new Random();
                 List<double> data = new List<double>(N);
                 for (int i = 0; i < N; i += 2)
@@ -107,6 +147,8 @@ namespace SimulationLabs
                     {
                         double z2 = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
                         data.Add(mean + sigma * z2);
+                        // причем z1 и z2 независимы!
+                        // чтобы не генерировать лишний раз u1 u2 сразу считаем по двум формулам
                     }
                 }
 
@@ -117,10 +159,14 @@ namespace SimulationLabs
                 foreach (var v in data) empVar += (v - empMean) * (v - empMean);
                 empVar /= (N - 1);
 
-                // 3. Фиксированные границы графика (±3.5σ)
-                double xMin = mean - 3.5 * sigma;
-                double xMax = mean + 3.5 * sigma;
-                int numBins = 10;
+                // 3. Границы графика
+                double xMin = data.Min() + 0.01;
+                double xMax = data.Max() + 0.01;
+                // Выбор числа интервалов - Sturges' formula
+                // Хорош если данные ~ нормально распределенны 
+                // может быть плох для n < 30
+                int numBins = (int)Math.Ceiling(Math.Log2(N)) + 1;
+
                 double binWidth = (xMax - xMin) / numBins;
 
                 // 4. Распределение по бинам
@@ -130,8 +176,6 @@ namespace SimulationLabs
                     if (v >= xMin && v < xMax)
                     {
                         int idx = (int)((v - xMin) / binWidth);
-                        if (idx < 0) idx = 0;
-                        if (idx >= numBins) idx = numBins - 1;
                         counts[idx]++;
                     }
                 }
@@ -142,12 +186,18 @@ namespace SimulationLabs
                 {
                     double lower = xMin + i * binWidth;
                     double upper = lower + binWidth;
+                    // NormalCDF (Normal Cumulative Distribution Function)
+                    // — это статистическая функция, вычисляющая вероятность того,
+                    // что случайная величина, имеющая нормальное распределение, попадет в заданный интервал.
                     double pBin = NormalCDF(upper, mean, sigma) - NormalCDF(lower, mean, sigma);
-                    double expected = Math.Max(N * pBin, 1.0);
-                    chiSq += (counts[i] - expected) * (counts[i] - expected) / expected;
+                    double expected = N * pBin;
+                    chiSq += (counts[i] * counts[i]) / expected;
                 }
+                chiSq -= N;
 
-                double criticalVal = 11.07; // df=5, α=0.05
+                // -1, последний столбец (bin) автоматически свое значение получает чтобы в сумме было N 
+                double criticalVal = GetChiSquareCriticalValue(numBins - 1);
+
                 bool rejectH0 = chiSq > criticalVal;
 
                 double errMean = (mean != 0) ? Math.Abs((empMean - mean) / mean) * 100 : (sigma != 0 ? Math.Abs(empMean - mean) / sigma * 100 : 0);
@@ -157,9 +207,9 @@ namespace SimulationLabs
                 resText += $"Дисперсия: {empVar:F3} (ошибка = {errVar:F1}%)\n";
                 resText += $"Хи-квадрат: {chiSq:F2} (крит. значение = {criticalVal})\n";
                 if (rejectH0)
-                    resText += $"Хи-квадрат > крит. значения → нулевая гипотеза отвергается: данные противоречат теоретическому распределению";
+                    resText += $"Хи-квадрат > крит. значения -> нулевая гипотеза отвергается: данные противоречат теоретическому распределению";
                 else
-                    resText += $"Хи-квадрат ≤ крит. значения → нет оснований отвергнуть нулевую гипотезу: данные не противоречат теоретическому распределению";
+                    resText += $"Хи-квадрат ≤ крит. значения -> нет оснований отвергнуть нулевую гипотезу: данные не противоречат теоретическому распределению";
                 lblResults.Text = resText;
 
                 // 6. Настройка графика
@@ -205,7 +255,7 @@ namespace SimulationLabs
                 }
                 chart.ChartAreas["MainArea"].AxisX.IsMarginVisible = false;
 
-                // Теоретическая кривая (PDF * binWidth для совпадения масштаба с частотами)
+                // Теоретическая кривая (PDF * binWidth для совпадения масштаба с частотами
                 double step = binWidth / 5.0;
                 for (double x = xMin; x <= xMax; x += step)
                 {
@@ -218,16 +268,39 @@ namespace SimulationLabs
                 MessageBox.Show("Ошибка: " + ex.Message);
             }
         }
-
+        // Численное вычисление площади под кривой нормального распределения на интервале (~ -infty, x]
         private double NormalCDF(double x, double mean, double sigma)
         {
-            double z = (x - mean) / sigma;
-            double t = 1.0 / (1.0 + 0.2316419 * Math.Abs(z));
-            double d = 0.3989423 * Math.Exp(-z * z / 2.0);
-            double p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
-            return z > 0 ? 1.0 - p : p;
-        }
+            // 1. Пределы интегрирования 
+            // Нормальное распределение практически 0 за +/- 6 сигм
+            double lowerLimit = mean - 6 * sigma;
+            double upperLimit = x;
 
+            if (upperLimit <= lowerLimit) return 0.0;
+
+            // 2. Делим на N прямоугольников
+            int numRectangles = 10000;
+            double width = (upperLimit - lowerLimit) / numRectangles;
+
+            double area = 0.0;
+
+            // 3. Складываем площади
+            // Используем среднюю точку 
+            for (int i = 0; i < numRectangles; i++)
+            {
+                // Найти среднюю точку текущего прямоугольника 
+                double midPoint = lowerLimit + (i + 0.5) * width;
+
+                // Получить высоту прямоугольника в этой точке 
+                double height = NormalPDF(midPoint, mean, sigma);
+
+                // Площадь = Высота * ширина 
+                area += height * width;
+            }
+
+            return area;
+        }
+        // Вычислить значение нормального распределение в точке x с параметрами mean и sigma 
         private double NormalPDF(double x, double mean, double sigma)
         {
             return (1.0 / (sigma * Math.Sqrt(2.0 * Math.PI))) * Math.Exp(-0.5 * Math.Pow((x - mean) / sigma, 2));

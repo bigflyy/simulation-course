@@ -1,0 +1,45 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\simulation-course\\lab06\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A3B7C1D2-4E5F-6A7B-8C9D-0E1F2A3B4C5D}|DiscreteRV\\DiscreteRV.csproj|c:\\users\\user\\source\\repos\\simulation-course\\lab06\\discreterv\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A3B7C1D2-4E5F-6A7B-8C9D-0E1F2A3B4C5D}|DiscreteRV\\DiscreteRV.csproj|solutionrelative:discreterv\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\simulation-course\\lab06\\DiscreteRV\\Form1.cs",
+              "RelativeDocumentMoniker": "DiscreteRV\\Form1.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\simulation-course\\lab06\\DiscreteRV\\Form1.cs",
+              "RelativeToolTip": "DiscreteRV\\Form1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T08:46:27.653Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
