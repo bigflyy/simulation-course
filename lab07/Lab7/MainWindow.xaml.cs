@@ -66,6 +66,8 @@ namespace SimulationLabs
         private double alg1T = 0;
         private bool alg1Complete = false;
         private bool alg2Complete = false;
+        private double alg2TotalSimulationTime;
+        private static double[] alg2Share = new double[3];
 
         // Теоретическое стационарное распределение
         private readonly List<double> theoProbs = new List<double>();
@@ -93,18 +95,16 @@ namespace SimulationLabs
             UpdateCurrentStateDisplay();
         }
 
-        /// <summary>
+
         /// Обработчик изменения любой ячейки матрицы — автопересчёт диагонали.
-        /// </summary>
         private void MatrixCell_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_isInitialized)
                 UpdateDiagonal();
         }
 
-        /// <summary>
+
         /// Разрешаем ввод цифр, точки, запятой и минуса в поля матрицы.
-        /// </summary>
         private void MatrixCell_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             // Разрешаем: цифры, точка, запятая, минус
@@ -113,9 +113,25 @@ namespace SimulationLabs
             e.Handled = !isAllowed;
         }
 
-        /// <summary>
+        /// Обновление финальных долей времени (после завершения симуляции)
+        private void UpdateFinalTimeShares()
+        {
+            alg2TotalSimulationTime = totalTimeInState.Sum();
+            if (alg2TotalSimulationTime <= 0) return;
+
+            alg2Share[0] = totalTimeInState[0] / alg2TotalSimulationTime;
+            alg2Share[1] = totalTimeInState[1] / alg2TotalSimulationTime;
+            alg2Share[2] = totalTimeInState[2] / alg2TotalSimulationTime;
+
+            Dispatcher.Invoke(() =>
+            {
+                lblAlg2Pct1.Text = $"Ясно: {alg2Share[0]:F4}";
+                lblAlg2Pct2.Text = $"Облачно: {alg2Share[1]:F4}";
+                lblAlg2Pct3.Text = $"Пасмурно: {alg2Share[2]:F4}";
+            });
+        }
+
         /// Инициализация LiveCharts серий.
-        /// </summary>
         private void InitializeCharts()
         {
             // Алгоритм 1: эмпирические частоты конечных состояний + теоретическое π
@@ -198,10 +214,7 @@ namespace SimulationLabs
         }
 
         // ======================== ОБРАБОТКА МАТРИЦЫ Q ========================
-
-        /// <summary>
         /// Привязка событий к полям ввода матрицы для автопересчёта диагонали.
-        /// </summary>
         private void UpdateDiagonal()
         {
             // Сумма не-диагональных элементов в каждой строке с обратным знаком
@@ -218,9 +231,8 @@ namespace SimulationLabs
             if (txtQ22 != null) txtQ22.Text = $"-{q20 + q21:F3}";
         }
 
-        /// <summary>
+
         /// Безопасный парсинг double из строки (null-safe).
-        /// </summary>
         private static double ParseSafe(string? text)
         {
             if (string.IsNullOrEmpty(text)) return 0;
@@ -229,9 +241,8 @@ namespace SimulationLabs
             return 0;
         }
 
-        /// <summary>
+
         /// Чтение и валидация параметров из UI. Строит матрицу Q и массив λ.
-        /// </summary>
         private bool ReadAndValidateParameters()
         {
             try
@@ -297,10 +308,8 @@ namespace SimulationLabs
             }
         }
 
-        /// <summary>
         /// Расчёт стационарного распределения: π·Q = 0, Σπᵢ = 1
         /// для 3-х состояний
-        /// </summary>
         private void CalculateTheoreticalDistribution()
         {
             double l12 = Q[0, 1], l13 = Q[0, 2];
@@ -310,7 +319,7 @@ namespace SimulationLabs
             double A = (l12 + l13);
             double B = (l21 + l23);
 
-            // Выражается из уравнений 
+            // Выражается из уравнений π·Q = 0, Σπᵢ = 1
             double k = (A * B - l12 * l21) / (l31 * B + l21 * l32);
             double m = (A - k * l31) / l21;
             double sum = 1 + m + k;
@@ -327,7 +336,6 @@ namespace SimulationLabs
         }
 
         // ======================== КНОПКИ УПРАВЛЕНИЯ ========================
-
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             if (isRunning) return;
@@ -338,7 +346,7 @@ namespace SimulationLabs
             ResetSimulation();
             CalculateTheoreticalDistribution();
 
-            InitializeCharts(); // после вычисления теоретических характеристик 
+            UpdateAlg2TheoreticalLines(); // после вычисления теоретических характеристик 
 
             UpdateTheoreticalDisplay();
 
@@ -356,7 +364,7 @@ namespace SimulationLabs
             DisableMatrixInputs(true);
 
             // Запуск асинхронной симуляции
-            _ = RunSimulationAsync();
+            _ = RunAlg2SimulationAsync();
         }
 
         private void BtnStop_Click(object sender, RoutedEventArgs e)
@@ -367,9 +375,8 @@ namespace SimulationLabs
             DisableMatrixInputs(false);
         }
 
-        /// <summary>
+
         /// Полный сброс всех данных симуляции.
-        /// </summary>
         private void ResetSimulation()
         {
             isRunning = false;
@@ -380,7 +387,7 @@ namespace SimulationLabs
             totalTimeInState[1] = 0;
             totalTimeInState[2] = 0;
 
-            // Очистить графики - Loop through all series (Areas + Lines) to clear them
+            // Очистить графики 
             foreach (var series in alg2Series)
             {
                 series.Values.Clear();
@@ -395,13 +402,12 @@ namespace SimulationLabs
             }
 
             UpdateCurrentStateDisplay();
-            // No need to call UpdateAlg2Chart() here since we want the graph empty
+
             chartAlg2.Update(true, true);
         }
 
-        /// <summary>
+
         /// Блокировка/разблокировка полей ввода матрицы.
-        /// </summary>
         private void DisableMatrixInputs(bool disabled)
         {
             txtQ01.IsReadOnly = disabled;
@@ -414,9 +420,29 @@ namespace SimulationLabs
             cmbStartState.IsEnabled = !disabled;
         }
 
-        // ======================== ЯДРО СИМУЛЯЦИИ ========================
+        /// Обновляет только теоретические линии на графике Алгоритма 2
+        private void UpdateAlg2TheoreticalLines()
+        {
+            if (chartAlg2.AxisY.Count == 0 || theoProbs.Count != 3) return;
 
-        private async Task RunSimulationAsync()
+            var yAxis = chartAlg2.AxisY[0];
+            yAxis.Sections.Clear(); // Удаляем старые линии
+
+            for (int i = 0; i < 3; i++)
+            {
+                yAxis.Sections.Add(new AxisSection
+                {
+                    Value = theoProbs[i],
+                    Stroke = StateColors[i],
+                    StrokeThickness = 2,
+                    StrokeDashArray = new DoubleCollection { 5, 3 }
+                });
+            }
+
+            chartAlg2.Update(true, true); // Принудительно обновляем график
+        }
+        // Запуск алгоритма 2 симуляции
+        private async Task RunAlg2SimulationAsync()
         {
             while (currentTime < simulationEndTime && isRunning)
             {
@@ -437,22 +463,18 @@ namespace SimulationLabs
                 if (currentTime > simulationEndTime) break;
 
                 // 4. Выбираем следующее состояние по вероятностям перехода
-                // P(i→j) = Q[i,j] / λ[i] для j ≠ i
-                double r = rand.NextDouble();
-                double cumulative = 0;
-                int nextState = currentState;
+                // P(i→j) = Q[i,j] / λ[i] для j ≠ i, P(i→i) = 0
 
+                // Подготовить массив вероятностей перехода (индекс с 0) 
+                double[] transProbs = new double[3];
                 for (int j = 0; j < 3; j++)
                 {
-                    if (j == currentStateIndex) continue;
-                    double transProb = Q[currentStateIndex, j] / lambda[currentStateIndex];
-                    cumulative += transProb;
-                    if (r < cumulative)
-                    {
-                        nextState = j + 1;
-                        break;
-                    }
+                    // Самопереход запрещён во вложенной цепи
+                    transProbs[j] = (j == currentStateIndex) ? 0 : Q[currentStateIndex, j] / lambda[currentStateIndex];
                 }
+                double r = rand.NextDouble();
+                int nextIndex = SelectEvent(r, transProbs); // индекс с 0 
+                int nextState = nextIndex + 1; // индекс с 1
 
                 // 5. Записываем событие перехода
                 currentState = nextState;
@@ -462,8 +484,9 @@ namespace SimulationLabs
                 UpdateCurrentStateDisplay();
                 UpdateTransitionList();
                 UpdateAlg2Chart();
+                UpdateFinalTimeShares();
 
-                // 7. Пауза для визуализации (не влияет на математику!)
+                // 7. Пауза для визуализации (не влияет на результат вычислений)
                 await Task.Delay(int.Parse(txtSpeed.Text));
             }
 
@@ -477,9 +500,8 @@ namespace SimulationLabs
 
         // ======================== ОБНОВЛЕНИЕ UI ========================
 
-        /// <summary>
+
         /// Обновление отображения текущего состояния (иконка + подпись).
-        /// </summary>
         private void UpdateCurrentStateDisplay()
         {
             int idx = currentState - 1;
@@ -507,9 +529,8 @@ namespace SimulationLabs
             });
         }
 
-        /// <summary>
+
         /// Добавление нового элемента в ленту истории состояний.
-        /// </summary>
         private void UpdateTransitionList()
         {
             if (transitionHistory.Count == 0) return;
@@ -577,13 +598,8 @@ namespace SimulationLabs
             });
         }
 
-        /// <summary>
-        /// Обновление графика алгоритмы 2: доля времени в каждом состоянии.
- 
-        /// </summary>
-        private long _lastAlg2UpdateMs = 0;
-        private const long Alg2ThrottleMs = 300;
 
+        /// Обновление графика алгоритмы 2: доля времени в каждом состоянии.
         private void UpdateAlg2Chart()
         {
             double totalExact = totalTimeInState.Sum();
@@ -614,9 +630,8 @@ namespace SimulationLabs
             });
         }
 
-        /// <summary>
+
         /// Обновление отображения теоретических значений (общее для обоих алгоритмов).
-        /// </summary>
         private void UpdateTheoreticalDisplay()
         {
             Dispatcher.Invoke(() =>
@@ -632,10 +647,9 @@ namespace SimulationLabs
 
         // ======================== АЛГОРИТМ 1: Batch-симуляция ========================
 
-        /// <summary>
+
         /// Кнопка запуска алгоритма 1: N независимых запусков, каждый длительностью T.
         /// Считаем частоту конечных состояний.
-        /// </summary>
         private async void BtnAlg1Run_Click(object sender, RoutedEventArgs e)
         {
             double T = ParseSafe(txtAlg1T.Text);
@@ -671,27 +685,26 @@ namespace SimulationLabs
                     while (time < T)
                     {
                         int stateIdx = state - 1;
+                        // Время удержания в состоянии (экспоненциальное распределение)
                         double hold = -Math.Log(Math.Max(rand.NextDouble(), 1e-10)) / lambda[stateIdx];
                         time += hold;
                         if (time > T) break;
 
                         // Выбираем следующее состояние
-                        double r = rand.NextDouble();
-                        double cum = 0;
-                        int next = state;
-
+                        // Подготавливаем массив вероятностей перехода
+                        double[] transProbs = new double[3];
                         for (int j = 0; j < 3; j++)
                         {
-                            if (j == stateIdx) continue;
-                            double tp = Q[stateIdx, j] / lambda[stateIdx];
-                            cum += tp;
-                            if (r < cum)
-                            {
-                                next = j + 1;
-                                break;
-                            }
+                            // P(i→j) = Q[i,j] / λ[i] для j≠i, P(i→i) = 0
+                            transProbs[j] = (j == stateIdx) ? 0 : Q[stateIdx, j] / lambda[stateIdx];
                         }
-                        state = next;
+
+                        // Использовать универсальный алгоритм выбора
+                        double r = rand.NextDouble();
+                        int nextIdx = SelectEvent(r, transProbs);  // индекс с нуля
+
+                        // Конвертировать в индекс с 1
+                        state = nextIdx + 1;
                     }
 
                     finalCounts[state - 1]++;
@@ -738,10 +751,9 @@ namespace SimulationLabs
 
         // ======================== ЭКСПОРТ CSV ========================
 
-        /// <summary>
+
         /// Экспорт результатов в два CSV файла: summary + history.
         /// Доступен только после запуска обоих алгоритмов.
-        /// </summary>
         private void BtnExportCSV_Click(object sender, RoutedEventArgs e)
         {
             if (!alg1Complete)
@@ -781,30 +793,26 @@ namespace SimulationLabs
             }
         }
 
-        /// <summary>
+
         /// Экспорт сводной таблицы: оба алгоритма + теория.
-        /// </summary>
         private void ExportSummary(string filePath)
         {
             using var writer = new StreamWriter(filePath, false, System.Text.Encoding.UTF8);
-
-            double totalExact = totalTimeInState.Sum();
 
             writer.WriteLine("Состояние,Alg1_Частота,Alg2_Доля,Alg2_Время,Теоретическое_π,Alg1_Ошибка,Alg2_Ошибка");
 
             for (int i = 0; i < 3; i++)
             {
                 double alg1Freq = alg1N > 0 ? (double)alg1Counts[i] / alg1N : 0;
-                double alg2Share = totalExact > 0 ? totalTimeInState[i] / totalExact : 0;
+                double alg2ShareExport = alg2TotalSimulationTime > 0 ? alg2Share[i] : 0;
                 double theoretical = theoProbs.Count > i ? theoProbs[i] : 0;
 
-                writer.WriteLine($"{StateNames[i]},{alg1Freq:F4},{alg2Share:F4},{totalTimeInState[i]:F2},{theoretical:F4},{Math.Abs(alg1Freq - theoretical):F4},{Math.Abs(alg2Share - theoretical):F4}");
+                writer.WriteLine($"{StateNames[i]},{alg1Freq:F4},{alg2ShareExport:F4},{totalTimeInState[i]:F2},{theoretical:F4},{Math.Abs(alg1Freq - theoretical):F4},{Math.Abs(alg2ShareExport - theoretical):F4}");
             }
         }
 
-        /// <summary>
+
         /// Экспорт истории переходов (алгоритм 2).
-        /// </summary>
         private void ExportHistory(string filePath)
         {
             using var writer = new StreamWriter(filePath, false, System.Text.Encoding.UTF8);
@@ -817,14 +825,20 @@ namespace SimulationLabs
             }
         }
 
-        /// <summary>
-        /// Подсчёт количества посещений состояния (по истории переходов).
-        /// </summary>
-        private int CountVisits(int state)
+        /// Алгоритм выбора события из полной группы:
+        /// A := alpha; k := 1;
+        /// A := A - p_k; если A <= 0 — произошло событие k, иначе k++
+        private static int SelectEvent(double alpha, double[] probs)
         {
-            return transitionHistory.Count(r => r.State == state);
+            double a = alpha;
+            for (int k = 0; k < probs.Length - 1; k++)
+            {
+                a -= probs[k]; // вычитаем вероятность k-го события
+                if (a <= 0)
+                    return k;  // событие k произошло
+            }
+            return probs.Length - 1; // последнее событие — всё, что осталось
         }
-
-        // ======================== ВСПОМОГАТЕЛЬНЫЕ ========================
     }
 }
+
