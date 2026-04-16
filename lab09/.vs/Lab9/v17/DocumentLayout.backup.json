@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Uni\\simulation-course\\lab09\\",
+  "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\simulation-course\\lab09\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AFCBDA97-5BEA-4655-B0E0-04D6B057C5D5}|Lab9\\Lab9.csproj|d:\\uni\\simulation-course\\lab09\\lab9\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{AFCBDA97-5BEA-4655-B0E0-04D6B057C5D5}|Lab9\\Lab9.csproj|c:\\users\\user\\source\\repos\\simulation-course\\lab09\\lab9\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AFCBDA97-5BEA-4655-B0E0-04D6B057C5D5}|Lab9\\Lab9.csproj|solutionrelative:lab9\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AFCBDA97-5BEA-4655-B0E0-04D6B057C5D5}|Lab9\\Lab9.csproj|d:\\uni\\simulation-course\\lab09\\lab9\\lab9.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{AFCBDA97-5BEA-4655-B0E0-04D6B057C5D5}|Lab9\\Lab9.csproj|c:\\users\\user\\source\\repos\\simulation-course\\lab09\\lab9\\lab9.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{AFCBDA97-5BEA-4655-B0E0-04D6B057C5D5}|Lab9\\Lab9.csproj|solutionrelative:lab9\\lab9.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
@@ -28,11 +28,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "D:\\Uni\\simulation-course\\lab09\\Lab9\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\simulation-course\\lab09\\Lab9\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "Lab9\\MainWindow.xaml.cs",
-              "ToolTip": "D:\\Uni\\simulation-course\\lab09\\Lab9\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\simulation-course\\lab09\\Lab9\\MainWindow.xaml.cs",
               "RelativeToolTip": "Lab9\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAKEAAAAAAAAAAAAAAJgAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAF4AAAAAAAAAAAAkwEEAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-10T08:46:25.229Z",
               "EditorCaption": ""
@@ -41,13 +41,17 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Lab9.csproj",
-              "DocumentMoniker": "D:\\Uni\\simulation-course\\lab09\\Lab9\\Lab9.csproj",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\simulation-course\\lab09\\Lab9\\Lab9.csproj",
               "RelativeDocumentMoniker": "Lab9\\Lab9.csproj",
-              "ToolTip": "D:\\Uni\\simulation-course\\lab09\\Lab9\\Lab9.csproj",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\simulation-course\\lab09\\Lab9\\Lab9.csproj",
               "RelativeToolTip": "Lab9\\Lab9.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2026-04-10T08:46:21.708Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }
