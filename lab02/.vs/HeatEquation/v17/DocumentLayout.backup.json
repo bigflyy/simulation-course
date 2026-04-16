@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Uni\\simulation-course\\lab02\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5112CEFA-D30F-473B-9E4A-03B62B7D896C}|HeatEquation\\HeatEquation.csproj|d:\\uni\\simulation-course\\lab02\\heatequation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5112CEFA-D30F-473B-9E4A-03B62B7D896C}|HeatEquation\\HeatEquation.csproj|solutionrelative:heatequation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Uni\\simulation-course\\lab02\\HeatEquation\\Program.cs",
+              "RelativeDocumentMoniker": "HeatEquation\\Program.cs",
+              "ToolTip": "D:\\Uni\\simulation-course\\lab02\\HeatEquation\\Program.cs",
+              "RelativeToolTip": "HeatEquation\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-26T14:40:24.079Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

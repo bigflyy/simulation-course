@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "dgSpecHash": "NJJLKe3jR2U=",
+  "success": true,
+  "projectFilePath": "D:\\Uni\\simulation-course\\lab06\\DiscreteRV\\DiscreteRV.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\justc\\.nuget\\packages\\winforms.datavisualization\\1.10.0\\winforms.datavisualization.1.10.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "projectPath": "D:\\Uni\\simulation-course\\lab06\\DiscreteRV\\DiscreteRV.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\Uni\\simulation-course\\lab06\\DiscreteRV\\DiscreteRV.csproj",
+      "targetGraphs": []
+    }
+  ]
+}

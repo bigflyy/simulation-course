@@ -1,0 +1,57 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Uni\\simulation-course\\lab01\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E32327CF-8FD2-412A-A7CC-615AD4BAF5CA}|Simulation1\\Simulation1.csproj|d:\\uni\\simulation-course\\lab01\\simulation1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E32327CF-8FD2-412A-A7CC-615AD4BAF5CA}|Simulation1\\Simulation1.csproj|solutionrelative:simulation1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E32327CF-8FD2-412A-A7CC-615AD4BAF5CA}|Simulation1\\Simulation1.csproj|d:\\uni\\simulation-course\\lab01\\simulation1\\simulation1.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}",
+      "RelativeMoniker": "D:0:0:{E32327CF-8FD2-412A-A7CC-615AD4BAF5CA}|Simulation1\\Simulation1.csproj|solutionrelative:simulation1\\simulation1.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Simulation1",
+              "DocumentMoniker": "D:\\Uni\\simulation-course\\lab01\\Simulation1\\Simulation1.csproj",
+              "RelativeDocumentMoniker": "Simulation1\\Simulation1.csproj",
+              "ToolTip": "D:\\Uni\\simulation-course\\lab01\\Simulation1\\Simulation1.csproj",
+              "RelativeToolTip": "Simulation1\\Simulation1.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-19T02:49:52.589Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "D:\\Uni\\simulation-course\\lab01\\Simulation1\\Form1.cs",
+              "RelativeDocumentMoniker": "Simulation1\\Form1.cs",
+              "ToolTip": "D:\\Uni\\simulation-course\\lab01\\Simulation1\\Form1.cs",
+              "RelativeToolTip": "Simulation1\\Form1.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowDUAAABQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T02:33:56.907Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

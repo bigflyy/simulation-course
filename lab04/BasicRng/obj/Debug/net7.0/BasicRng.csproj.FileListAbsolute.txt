@@ -1,0 +1,15 @@
+D:\Uni\simulation-course\lab04\BasicRng\bin\Debug\net7.0\BasicRng.exe
+D:\Uni\simulation-course\lab04\BasicRng\bin\Debug\net7.0\BasicRng.deps.json
+D:\Uni\simulation-course\lab04\BasicRng\bin\Debug\net7.0\BasicRng.runtimeconfig.json
+D:\Uni\simulation-course\lab04\BasicRng\bin\Debug\net7.0\BasicRng.dll
+D:\Uni\simulation-course\lab04\BasicRng\bin\Debug\net7.0\BasicRng.pdb
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.GeneratedMSBuildEditorConfig.editorconfig
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.AssemblyInfoInputs.cache
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.AssemblyInfo.cs
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.csproj.CoreCompileInputs.cache
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.sourcelink.json
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.dll
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\refint\BasicRng.dll
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.pdb
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\BasicRng.genruntimeconfig.cache
+D:\Uni\simulation-course\lab04\BasicRng\obj\Debug\net7.0\ref\BasicRng.dll

@@ -1,0 +1,17 @@
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\bin\Debug\net8.0-windows\CellularAutomaton.exe
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\bin\Debug\net8.0-windows\CellularAutomaton.deps.json
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\bin\Debug\net8.0-windows\CellularAutomaton.runtimeconfig.json
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\bin\Debug\net8.0-windows\CellularAutomaton.dll
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\bin\Debug\net8.0-windows\CellularAutomaton.pdb
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.Constants.resources
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.csproj.GenerateResource.cache
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.GeneratedMSBuildEditorConfig.editorconfig
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.AssemblyInfoInputs.cache
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.AssemblyInfo.cs
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.csproj.CoreCompileInputs.cache
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.sourcelink.json
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.dll
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\refint\CellularAutomaton.dll
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.pdb
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\CellularAutomaton.genruntimeconfig.cache
+D:\Uni\simulation-course\lab03\CellularAutomaton\CellularAutomaton\obj\Debug\net8.0-windows\ref\CellularAutomaton.dll

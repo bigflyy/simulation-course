@@ -1,0 +1,15 @@
+D:\Uni\simulation-course\lab02\HeatEquation\bin\Debug\net7.0\HeatEquation.exe
+D:\Uni\simulation-course\lab02\HeatEquation\bin\Debug\net7.0\HeatEquation.deps.json
+D:\Uni\simulation-course\lab02\HeatEquation\bin\Debug\net7.0\HeatEquation.runtimeconfig.json
+D:\Uni\simulation-course\lab02\HeatEquation\bin\Debug\net7.0\HeatEquation.dll
+D:\Uni\simulation-course\lab02\HeatEquation\bin\Debug\net7.0\HeatEquation.pdb
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.GeneratedMSBuildEditorConfig.editorconfig
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.AssemblyInfoInputs.cache
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.AssemblyInfo.cs
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.csproj.CoreCompileInputs.cache
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.sourcelink.json
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.dll
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\refint\HeatEquation.dll
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.pdb
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\HeatEquation.genruntimeconfig.cache
+D:\Uni\simulation-course\lab02\HeatEquation\obj\Debug\net7.0\ref\HeatEquation.dll
