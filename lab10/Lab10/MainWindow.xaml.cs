@@ -12,27 +12,27 @@ namespace SimulationLabs
 {
     public partial class MainWindow : Window
     {
-        private readonly Random rand = new Random();
-        private readonly SeriesCollection queueSeries = new SeriesCollection();
-        private readonly SeriesCollection resultsSeries = new SeriesCollection();
-        private bool isRunning = false;
-        private bool simulationDone = false;
+        private readonly Random randomNumberGenerator = new Random();
+        private readonly SeriesCollection queueLengthChartSeries = new SeriesCollection();
+        private readonly SeriesCollection resultsChartSeries = new SeriesCollection();
+        private bool isSimulationRunning = false;
+        private bool hasSimulationCompleted = false;
 
         // Результаты симуляции для экспорта
-        private QueueSystem? lastSystem;
-        private double lastT;
+        private QueueSystem? mostRecentQueueSystem;
+        private double mostRecentSimulationDuration;
 
         // Временные ряды для графика
-        private List<double> timePoints = new();
-        private List<double> busySeries = new();
-        private List<double> queueSeriesData = new();
+        private List<double> simulationTimePoints = new();
+        private List<double> busyServersTimeSeries = new();
+        private List<double> queueLengthTimeSeries = new();
 
         public MainWindow()
         {
             InitializeComponent();
 
             // Инициализируем серии графика очереди
-            queueSeries.Add(new LineSeries
+            queueLengthChartSeries.Add(new LineSeries
             {
                 Title = "Занятые серверы",
                 Values = new ChartValues<double> { 0 },
@@ -42,7 +42,7 @@ namespace SimulationLabs
                 PointGeometrySize = 3,
                 LineSmoothness = 0
             });
-            queueSeries.Add(new LineSeries
+            queueLengthChartSeries.Add(new LineSeries
             {
                 Title = "Длина очереди",
                 Values = new ChartValues<double> { 0 },
@@ -52,7 +52,7 @@ namespace SimulationLabs
                 PointGeometrySize = 3,
                 LineSmoothness = 0
             });
-            chartQueue.Series = queueSeries;
+            chartQueue.Series = queueLengthChartSeries;
 
             // Ось Y очереди — только целые числа
             chartQueue.AxisY.Add(new LiveCharts.Wpf.Axis
@@ -64,25 +64,25 @@ namespace SimulationLabs
             });
 
             // Инициализируем серии графика результатов
-            resultsSeries.Add(new ColumnSeries
+            resultsChartSeries.Add(new ColumnSeries
             {
                 Title = "Обслужено",
                 Values = new ChartValues<double> { 0 },
                 Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(70, 130, 180))
             });
-            resultsSeries.Add(new ColumnSeries
+            resultsChartSeries.Add(new ColumnSeries
             {
                 Title = "Отказы",
                 Values = new ChartValues<double> { 0 },
                 Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(200, 70, 70))
             });
-            resultsSeries.Add(new ColumnSeries
+            resultsChartSeries.Add(new ColumnSeries
             {
                 Title = "Нетерпеливые",
                 Values = new ChartValues<double> { 0 },
                 Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(200, 160, 50))
             });
-            chartResults.Series = resultsSeries;
+            chartResults.Series = resultsChartSeries;
 
             // Оси графика результатов (с форматированием Y)
             chartResults.AxisX.Add(new LiveCharts.Wpf.Axis
@@ -100,237 +100,232 @@ namespace SimulationLabs
 
         private double ParseSafe(string text)
         {
-            if (double.TryParse(text, out var val)) return val;
+            if (double.TryParse(text, out var parsedValue)) return parsedValue;
             return 0;
         }
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
-            if (isRunning) return;
+            if (isSimulationRunning) return;
 
-            double lambda = ParseSafe(txtLambda.Text);
-            double mu = ParseSafe(txtMu.Text);
-            int n = (int)ParseSafe(txtN.Text);
-            int maxQueue = (int)ParseSafe(txtQueueSize.Text);
-            double patience = ParseSafe(txtPatience.Text);
-            double T = ParseSafe(txtT.Text);
+            double arrivalRate = ParseSafe(txtLambda.Text);
+            double serviceRate = ParseSafe(txtMu.Text);
+            int numberOfServers = (int)ParseSafe(txtN.Text);
+            int maximumQueueSize = (int)ParseSafe(txtQueueSize.Text);
+            double maximumPatienceTime = ParseSafe(txtPatience.Text);
+            double simulationDuration = ParseSafe(txtT.Text);
 
-            if (lambda <= 0 || mu <= 0 || n <= 0 || maxQueue < 0 || patience <= 0 || T <= 0)
+            if (arrivalRate <= 0 || serviceRate <= 0 || numberOfServers <= 0 || maximumQueueSize < 0 || maximumPatienceTime <= 0 || simulationDuration <= 0)
             {
                 MessageBox.Show("Все параметры должны быть положительными.", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            isRunning = true;
+            isSimulationRunning = true;
             btnRun.IsEnabled = false;
             lblStatus.Text = "Выполняется...";
 
-            await Task.Run(() => Simulate(lambda, mu, n, maxQueue, patience, T));
+            await Task.Run(() => Simulate(arrivalRate, serviceRate, numberOfServers, maximumQueueSize, maximumPatienceTime, simulationDuration));
 
             btnRun.IsEnabled = true;
             btnExport.IsEnabled = true;
-            isRunning = false;
-            simulationDone = true;
-            lblStatus.Text = $"Готово. λ={lambda}, μ={mu}, n={n}, T={T}";
+            isSimulationRunning = false;
+            hasSimulationCompleted = true;
+            lblStatus.Text = $"Готово. λ={arrivalRate}, μ={serviceRate}, n={numberOfServers}, T={simulationDuration}";
         }
 
-        private void Simulate(double lambda, double mu, int n, int maxQueue, double patience, double T)
+        private void Simulate(double arrivalRate, double serviceRate,
+            int numberOfServers, int maximumQueueSize,
+            double maximumPatienceTime, double simulationDuration)
         {
-            var qs = new QueueSystem(n, maxQueue, lambda, mu, patience);
+            var queueSystem = new QueueSystem(numberOfServers, maximumQueueSize,
+                                              arrivalRate, serviceRate, maximumPatienceTime);
 
             // Временные ряды для графика
-            var timePoints = new List<double>();
-            var busyData = new List<double>();
-            var queueData = new List<double>();
-            double snapshotInterval = T / 500;
-            double nextSnapshot = 0;
+            var simulationTimePointsLocal = new List<double>();
+            var busyServersDataLocal = new List<double>();
+            var queueLengthDataLocal = new List<double>();
+            double snapshotInterval = simulationDuration / 500;
+            double nextSnapshotTime = 0;
 
             // Генерируем все заявки заранее
-            double currentTime = 0;
-            var arrivals = new List<double>();
-            while (currentTime < T)
+            double currentSimulationTime = 0;
+            var arrivalTimesList = new List<double>();
+            while (currentSimulationTime < simulationDuration)
             {
-                double interArrival = -Math.Log(Math.Max(rand.NextDouble(), 1e-10)) / lambda;
-                currentTime += interArrival;
-                if (currentTime < T)
-                    arrivals.Add(currentTime);
+                double interArrivalTime = -Math.Log(Math.Max(randomNumberGenerator.NextDouble(), 1e-10)) / arrivalRate;
+                currentSimulationTime += interArrivalTime;
+                if (currentSimulationTime < simulationDuration)
+                    arrivalTimesList.Add(currentSimulationTime);
             }
 
             // Очередь событий: прибытия и завершения обслуживания
-            var events = new SortedSet<(double time, int type, int requestId)>();
+            var scheduledEvents = new SortedSet<(double eventTime, int eventType, int requestIdentifier)>();
             // type: 0 = прибытие, 1 = завершение обслуживания
 
-            var allRequests = new Dictionary<int, Request>();
-            int reqId = 0;
+            var requestsById = new Dictionary<int, Request>();
+            int requestIdentifierCounter = 0;
 
             // Добавляем все прибытия
-            foreach (var arrTime in arrivals)
+            foreach (var arrivalTimeValue in arrivalTimesList)
             {
-                reqId++;
-                double serviceTime = -Math.Log(Math.Max(rand.NextDouble(), 1e-10)) / mu;
-                double maxWait = patience; // фиксированное терпение из GUI
-                var req = new Request(reqId, arrTime, serviceTime, maxWait);
-                allRequests[reqId] = req;
-                events.Add((arrTime, 0, reqId));
+                requestIdentifierCounter++;
+                double serviceTimeValue = -Math.Log(Math.Max(randomNumberGenerator.NextDouble(), 1e-10)) / serviceRate;
+                double maximumWaitTimeValue = maximumPatienceTime; // фиксированное терпение из GUI
+                var currentRequest = new Request(requestIdentifierCounter, arrivalTimeValue, serviceTimeValue, maximumWaitTimeValue);
+                requestsById[requestIdentifierCounter] = currentRequest;
+                scheduledEvents.Add((arrivalTimeValue, 0, requestIdentifierCounter));
             }
 
             // Обработка событий
-            while (events.Count > 0)
+            while (scheduledEvents.Count > 0)
             {
-                var evt = events.Min;
-                events.Remove(evt);
-                currentTime = evt.time;
+                // Получаем event с минимальным временем
+                var currentEvent = scheduledEvents.Min;
+                scheduledEvents.Remove(currentEvent);
+                currentSimulationTime = currentEvent.eventTime;
 
-                if (evt.type == 0)
+                if (currentEvent.eventType == 0)
                 {
                     // Прибытие
-                    var req = allRequests[evt.requestId];
-                    qs.Arrival(req, currentTime);
+                    var incomingRequest = requestsById[currentEvent.requestIdentifier];
+                    queueSystem.Arrival(incomingRequest, currentSimulationTime);
 
                     // Если заявка встала в очередь, планируем проверку нетерпеливости
-                    if (qs.WaitingQueue.Any(wq => wq.Id == req.Id))
+                    if (queueSystem.WaitingQueue.Any(waitingRequest => waitingRequest.Id == incomingRequest.Id))
                     {
-                        double leaveTime = req.ArrivalTime + req.MaxWaitTime;
-                        events.Add((leaveTime, 2, req.Id)); // type 2 = проверка нетерпеливости
+                        double impatientLeaveTime = incomingRequest.ArrivalTime + incomingRequest.MaxWaitTime;
+                        scheduledEvents.Add((impatientLeaveTime, 2, incomingRequest.Id)); // type 2 = проверка нетерпеливости
                     }
                 }
-                else if (evt.type == 1)
+                else if (currentEvent.eventType == 1)
                 {
                     // Завершение обслуживания сервером
-                    qs.TryServeFromQueue(currentTime);
-
-                    // Если кто-то начал обслуживание, запланируем завершение
-                    foreach (var server in qs.Servers)
-                    {
-                        if (server.FreeAt > currentTime && server.FreeAt < T)
-                        {
-                            // Уже запланировано
-                        }
-                    }
+                    queueSystem.TryServeFromQueue(currentSimulationTime);
                 }
-                else if (evt.type == 2)
+                else if (currentEvent.eventType == 2)
                 {
                     // Проверка нетерпеливости
-                    qs.CheckImpatient(currentTime);
+                    queueSystem.CheckImpatient(currentSimulationTime);
                 }
 
                 // После каждого события: планируем завершения обслуживания
-                foreach (var server in qs.Servers)
+                foreach (var currentServer in queueSystem.Servers)
                 {
-                    if (server.FreeAt > currentTime && server.FreeAt <= T)
+                    if (currentServer.FreeAt > currentSimulationTime && currentServer.FreeAt <= simulationDuration)
                     {
                         // Проверяем, нет ли уже такого события
-                        bool exists = events.Any(ev => ev.time == server.FreeAt && ev.type == 1);
-                        if (!exists)
-                            events.Add((server.FreeAt, 1, 0));
+                        bool eventAlreadyExists = scheduledEvents.Any(existingEvent => existingEvent.eventTime == currentServer.FreeAt && existingEvent.eventType == 1);
+                        if (!eventAlreadyExists)
+                            scheduledEvents.Add((currentServer.FreeAt, 1, 0));
                     }
                 }
 
                 // Снимки для графика
-                while (nextSnapshot <= currentTime && nextSnapshot <= T)
+                while (nextSnapshotTime <= currentSimulationTime && nextSnapshotTime <= simulationDuration)
                 {
-                    timePoints.Add(nextSnapshot);
-                    busyData.Add(qs.BusyServers(nextSnapshot));
-                    queueData.Add(qs.WaitingQueue.Count);
-                    nextSnapshot += snapshotInterval;
+                    simulationTimePointsLocal.Add(nextSnapshotTime);
+                    busyServersDataLocal.Add(queueSystem.BusyServers(nextSnapshotTime));
+                    queueLengthDataLocal.Add(queueSystem.WaitingQueue.Count);
+                    nextSnapshotTime += snapshotInterval;
                 }
             }
 
             // Сохраняем для экспорта
-            lastSystem = qs;
-            lastT = T;
-            this.timePoints = timePoints;
-            this.busySeries = busyData;
-            this.queueSeriesData = queueData;
+            mostRecentQueueSystem = queueSystem;
+            mostRecentSimulationDuration = simulationDuration;
+            this.simulationTimePoints = simulationTimePointsLocal;
+            this.busyServersTimeSeries = busyServersDataLocal;
+            this.queueLengthTimeSeries = queueLengthDataLocal;
 
             // Обновляем UI
             Dispatcher.Invoke(() =>
             {
                 // График очереди
-                if (queueSeries.Count >= 2)
+                if (queueLengthChartSeries.Count >= 2)
                 {
-                    queueSeries[0].Values = new ChartValues<double>(busyData);
-                    queueSeries[1].Values = new ChartValues<double>(queueData);
+                    queueLengthChartSeries[0].Values = new ChartValues<double>(busyServersDataLocal);
+                    queueLengthChartSeries[1].Values = new ChartValues<double>(queueLengthDataLocal);
                 }
                 // Ось X: реальные значения времени
                 if (chartQueue.AxisX.Count > 0)
                 {
-                    var labels = new List<string>();
-                    for (int i = 0; i < timePoints.Count; i++)
-                        labels.Add(timePoints[i].ToString("F0"));
-                    chartQueue.AxisX[0].Labels = labels;
-                    int step = timePoints.Count > 200 ? 50 : (timePoints.Count > 50 ? 10 : 1);
-                    chartQueue.AxisX[0].Separator = new LiveCharts.Wpf.Separator { Step = step };
+                    var timeLabels = new List<string>();
+                    for (int labelIndex = 0; labelIndex < simulationTimePointsLocal.Count; labelIndex++)
+                        timeLabels.Add(simulationTimePointsLocal[labelIndex].ToString("F0"));
+                    chartQueue.AxisX[0].Labels = timeLabels;
+                    int labelStep = simulationTimePointsLocal.Count > 200 ? 50 : (simulationTimePointsLocal.Count > 50 ? 10 : 1);
+                    chartQueue.AxisX[0].Separator = new LiveCharts.Wpf.Separator { Step = labelStep };
                     chartQueue.AxisX[0].LabelsRotation = -45;
                 }
 
                 // График результатов
-                double total = qs.TotalArrivals > 0 ? qs.TotalArrivals : 1;
-                double servedP = Math.Round((double)qs.TotalServed / total, 4);
-                double refusedP = Math.Round((double)qs.TotalRefused / total, 4);
-                double impatientP = Math.Round((double)qs.TotalImpatient / total, 4);
+                double totalArrivalsCount = queueSystem.TotalArrivals > 0 ? queueSystem.TotalArrivals : 1;
+                double servedProportion = Math.Round((double)queueSystem.TotalServed / totalArrivalsCount, 4);
+                double refusedProportion = Math.Round((double)queueSystem.TotalRefused / totalArrivalsCount, 4);
+                double impatientProportion = Math.Round((double)queueSystem.TotalImpatient / totalArrivalsCount, 4);
 
-                if (resultsSeries.Count >= 3)
+                if (resultsChartSeries.Count >= 3)
                 {
-                    resultsSeries[0].Values = new ChartValues<double> { servedP };
-                    resultsSeries[1].Values = new ChartValues<double> { refusedP };
-                    resultsSeries[2].Values = new ChartValues<double> { impatientP };
+                    resultsChartSeries[0].Values = new ChartValues<double> { servedProportion };
+                    resultsChartSeries[1].Values = new ChartValues<double> { refusedProportion };
+                    resultsChartSeries[2].Values = new ChartValues<double> { impatientProportion };
                 }
 
                 // Лог
-                txtLog.Text = string.Join("\n", qs.EventLog);
+                txtLog.Text = string.Join("\n", queueSystem.EventLog);
             });
         }
 
         private void BtnExport_Click(object sender, RoutedEventArgs e)
         {
-            if (lastSystem == null || !simulationDone)
+            if (mostRecentQueueSystem == null || !hasSimulationCompleted)
             {
                 MessageBox.Show("Сначала запустите симуляцию.", "Экспорт",
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            var saveDialog = new SaveFileDialog
+            var saveFileDialog = new SaveFileDialog
             {
                 Filter = "Текстовые файлы (*.txt)|*.txt",
                 DefaultExt = "txt",
-                FileName = $"lab10_report_n{lastSystem.NumServers}_T{lastT:F0}.txt"
+                FileName = $"lab10_report_n{mostRecentQueueSystem.NumServers}_T{mostRecentSimulationDuration:F0}.txt"
             };
 
-            if (saveDialog.ShowDialog() == true)
+            if (saveFileDialog.ShowDialog() == true)
             {
-                using var writer = new StreamWriter(saveDialog.FileName, false, System.Text.Encoding.UTF8);
+                using var fileWriter = new StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.UTF8);
 
-                var qs = lastSystem;
-                writer.WriteLine("=== Лабораторная работа 10: СМО M/M/n с усложнениями ===");
-                writer.WriteLine();
-                writer.WriteLine("Параметры:");
-                writer.WriteLine($"  λ (прибытие) = {qs.Lambda}");
-                writer.WriteLine($"  μ (обслуживание) = {qs.Mu}");
-                writer.WriteLine($"  n (серверы) = {qs.NumServers}");
-                writer.WriteLine($"  Макс. размер очереди = {qs.MaxQueueSize}");
-                writer.WriteLine($"  Макс. терпение = {qs.MaxPatience}");
-                writer.WriteLine($"  Длительность T = {lastT}");
-                writer.WriteLine();
-                writer.WriteLine("Результаты:");
-                writer.WriteLine($"  Всего заявок: {qs.TotalArrivals}");
-                writer.WriteLine($"  Обслужено: {qs.TotalServed}");
-                writer.WriteLine($"  Отказы (очередь полна): {qs.TotalRefused}");
-                writer.WriteLine($"  Нетерпеливые: {qs.TotalImpatient}");
-                writer.WriteLine($"  Ср. время ожидания: {(qs.TotalServed > 0 ? qs.TotalWaitTime / qs.TotalServed : 0):F4}");
-                writer.WriteLine($"  Ср. время обслуживания: {(qs.TotalServed > 0 ? qs.TotalServiceTime / qs.TotalServed : 0):F4}");
-                writer.WriteLine();
-                writer.WriteLine("Доли:");
-                double total = qs.TotalArrivals > 0 ? qs.TotalArrivals : 1;
-                writer.WriteLine($"  Обслужено: {(double)qs.TotalServed / total:F4}");
-                writer.WriteLine($"  Отказы: {(double)qs.TotalRefused / total:F4}");
-                writer.WriteLine($"  Нетерпеливые: {(double)qs.TotalImpatient / total:F4}");
-                writer.WriteLine();
-                writer.WriteLine("Лог событий:");
-                foreach (var line in qs.EventLog)
-                    writer.WriteLine(line);
+                var exportedQueueSystem = mostRecentQueueSystem;
+                fileWriter.WriteLine("=== Лабораторная работа 10: СМО M/M/n с усложнениями ===");
+                fileWriter.WriteLine();
+                fileWriter.WriteLine("Параметры:");
+                fileWriter.WriteLine($"  λ (прибытие) = {exportedQueueSystem.Lambda}");
+                fileWriter.WriteLine($"  μ (обслуживание) = {exportedQueueSystem.Mu}");
+                fileWriter.WriteLine($"  n (серверы) = {exportedQueueSystem.NumServers}");
+                fileWriter.WriteLine($"  Макс. размер очереди = {exportedQueueSystem.MaxQueueSize}");
+                fileWriter.WriteLine($"  Макс. терпение = {exportedQueueSystem.MaxPatience}");
+                fileWriter.WriteLine($"  Длительность T = {mostRecentSimulationDuration}");
+                fileWriter.WriteLine();
+                fileWriter.WriteLine("Результаты:");
+                fileWriter.WriteLine($"  Всего заявок: {exportedQueueSystem.TotalArrivals}");
+                fileWriter.WriteLine($"  Обслужено: {exportedQueueSystem.TotalServed}");
+                fileWriter.WriteLine($"  Отказы (очередь полна): {exportedQueueSystem.TotalRefused}");
+                fileWriter.WriteLine($"  Нетерпеливые: {exportedQueueSystem.TotalImpatient}");
+                fileWriter.WriteLine($"  Ср. время ожидания: {(exportedQueueSystem.TotalServed > 0 ? exportedQueueSystem.TotalWaitTime / exportedQueueSystem.TotalServed : 0):F4}");
+                fileWriter.WriteLine($"  Ср. время обслуживания: {(exportedQueueSystem.TotalServed > 0 ? exportedQueueSystem.TotalServiceTime / exportedQueueSystem.TotalServed : 0):F4}");
+                fileWriter.WriteLine();
+                fileWriter.WriteLine("Доли:");
+                double totalArrivalsForExport = exportedQueueSystem.TotalArrivals > 0 ? exportedQueueSystem.TotalArrivals : 1;
+                fileWriter.WriteLine($"  Обслужено: {(double)exportedQueueSystem.TotalServed / totalArrivalsForExport:F4}");
+                fileWriter.WriteLine($"  Отказы: {(double)exportedQueueSystem.TotalRefused / totalArrivalsForExport:F4}");
+                fileWriter.WriteLine($"  Нетерпеливые: {(double)exportedQueueSystem.TotalImpatient / totalArrivalsForExport:F4}");
+                fileWriter.WriteLine();
+                fileWriter.WriteLine("Лог событий:");
+                foreach (var logEntry in exportedQueueSystem.EventLog)
+                    fileWriter.WriteLine(logEntry);
             }
         }
     }

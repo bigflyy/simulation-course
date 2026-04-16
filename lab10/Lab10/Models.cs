@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace SimulationLabs
 {
-    /// <summary>
+
     /// Заявка (клиент) в системе массового обслуживания.
-    /// </summary>
     public class Request
     {
         public int Id { get; set; }
@@ -22,9 +21,8 @@ namespace SimulationLabs
         }
     }
 
-    /// <summary>
+
     /// Сервер (прибор) — обрабатывает заявки.
-    /// </summary>
     public class Server
     {
         public int Id { get; set; }
@@ -39,12 +37,12 @@ namespace SimulationLabs
         }
     }
 
-    /// <summary>
+
     /// Система массового обслуживания M/M/n с очередью и нетерпеливыми заявками.
     /// Два усложнения:
     ///   1) Очередь ограниченной длины (maxQueueSize)
     ///   2) Нетерпеливые заявки — покидают очередь, если ждут дольше maxWaitTime
-    /// </summary>
+
     public class QueueSystem
     {
         public int NumServers { get; }
@@ -95,9 +93,8 @@ namespace SimulationLabs
             TotalServiceTime = 0;
         }
 
-        /// <summary>
+ 
         /// Прибытие новой заявки.
-        /// </summary>
         public void Arrival(Request request, double currentTime)
         {
             TotalArrivals++;
@@ -135,9 +132,8 @@ namespace SimulationLabs
             }
         }
 
-        /// <summary>
+ 
         /// Проверка нетерпеливых заявок: те, кто ждал слишком долго, уходят.
-        /// </summary>
         public void CheckImpatient(double currentTime)
         {
             var stillWaiting = new Queue<Request>();
@@ -160,9 +156,8 @@ namespace SimulationLabs
                 WaitingQueue.Enqueue(stillWaiting.Dequeue());
         }
 
-        /// <summary>
+ 
         /// Освобождение серверов: пытаемся начать обслуживание заявок из очереди.
-        /// </summary>
         public void TryServeFromQueue(double currentTime)
         {
             foreach (var server in Servers)
@@ -180,9 +175,8 @@ namespace SimulationLabs
             }
         }
 
-        /// <summary>
+ 
         /// Число занятых серверов в данный момент.
-        /// </summary>
         public int BusyServers(double currentTime)
         {
             int count = 0;
