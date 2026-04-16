@@ -74,7 +74,7 @@
                     <TextBox x:Name="txtQ10" Grid.Row="1" Grid.Column="0" Style="{StaticResource MatrixCell}" Text="0.2" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
                     <TextBox x:Name="txtQ11" Grid.Row="1" Grid.Column="1" Style="{StaticResource MatrixCellReadOnly}"/>
                     <TextBox x:Name="txtQ12" Grid.Row="1" Grid.Column="2" Style="{StaticResource MatrixCell}" Text="0.4" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
-                    <TextBox x:Name="txtQ20" Grid.Row="2" Grid.Column="0" Style="{StaticResource MatrixCell}" Text="0.1" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
+                    <TextBox x:Name="txtQ20" Grid.Row="2" Grid.Column="0" Style="{StaticResource MatrixCell}" Text="0.9" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
                     <TextBox x:Name="txtQ21" Grid.Row="2" Grid.Column="1" Style="{StaticResource MatrixCell}" Text="0.2" TextChanged="MatrixCell_TextChanged" PreviewTextInput="MatrixCell_PreviewTextInput"/>
                     <TextBox x:Name="txtQ22" Grid.Row="2" Grid.Column="2" Style="{StaticResource MatrixCellReadOnly}"/>
                 </Grid>

@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|solutionrelative:lab7\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|d:\\uni\\simulation-course\\lab07\\lab7\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|solutionrelative:lab7\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|d:\\uni\\simulation-course\\lab07\\lab7\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|solutionrelative:lab7\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|d:\\uni\\simulation-course\\lab07\\lab7\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|solutionrelative:lab7\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|d:\\uni\\simulation-course\\lab07\\lab7\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Lab7\\Lab7.csproj|solutionrelative:lab7\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,25 +34,27 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "D:\\Uni\\simulation-course\\lab07\\Lab7\\MainWindow.xaml",
               "RelativeDocumentMoniker": "Lab7\\MainWindow.xaml",
               "ToolTip": "D:\\Uni\\simulation-course\\lab07\\Lab7\\MainWindow.xaml",
               "RelativeToolTip": "Lab7\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-04-10T04:15:17.469Z"
+              "WhenOpened": "2026-04-10T04:15:17.469Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "App.xaml",
               "DocumentMoniker": "D:\\Uni\\simulation-course\\lab07\\Lab7\\App.xaml",
               "RelativeDocumentMoniker": "Lab7\\App.xaml",
               "ToolTip": "D:\\Uni\\simulation-course\\lab07\\Lab7\\App.xaml",
               "RelativeToolTip": "Lab7\\App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-04-10T04:15:13.414Z"
+              "WhenOpened": "2026-04-10T04:15:13.414Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -62,14 +64,14 @@
               "RelativeDocumentMoniker": "Lab7\\MainWindow.xaml.cs",
               "ToolTip": "D:\\Uni\\simulation-course\\lab07\\Lab7\\MainWindow.xaml.cs",
               "RelativeToolTip": "Lab7\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAKUBAAAAAAAAAAAuwLwBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAE4CAAAAAAAAAAAAwFcCAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-10T03:46:22.647Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "App.xaml.cs",
               "DocumentMoniker": "D:\\Uni\\simulation-course\\lab07\\Lab7\\App.xaml.cs",
               "RelativeDocumentMoniker": "Lab7\\App.xaml.cs",

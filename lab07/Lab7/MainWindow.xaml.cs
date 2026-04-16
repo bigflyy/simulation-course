@@ -142,26 +142,58 @@ namespace SimulationLabs
             });
 
             // Алгоритм 2: доля времени в каждом состоянии
-            alg2Series.Add(new ColumnSeries
+            alg2Series.Clear();
+            var areaFills = new Brush[] {
+                new SolidColorBrush(Color.FromArgb(60, 255, 215, 0)),  // Желтый (Ясно)
+                new SolidColorBrush(Color.FromArgb(60, 169, 169, 169)), // Серый (Облачно)
+                new SolidColorBrush(Color.FromArgb(60, 47, 79, 79))    // Темный (Пасмурно)
+            };
+
+            for (int i = 0; i < 3; i++)
             {
-                Title = "Доля времени",
-                Values = new ChartValues<double> { 0, 0, 0 },
-                Fill = new SolidColorBrush(Color.FromRgb(100, 180, 100))
-            });
-            alg2Series.Add(new ColumnSeries
-            {
-                Title = "Теоретическое π",
-                Values = new ChartValues<double> { 0, 0, 0 },
-                Fill = new SolidColorBrush(Color.FromRgb(70, 130, 180))
-            });
+                alg2Series.Add(new LineSeries
+                {
+                    Title = StateNames[i],
+                    Values = new ChartValues<LiveCharts.Defaults.ObservablePoint>(),
+                    PointGeometry = null,
+                    Fill = areaFills[i],
+                    Stroke = StateColors[i],
+                    StrokeThickness = 1.5,
+                    AreaLimit = 0,
+                });
+            }
             chartAlg2.Series = alg2Series;
-            chartAlg2.AxisY.Add(new Axis
+
+            // 3. Настройка Осей и СТАТИЧНЫХ линий теории (через Sections)
+            chartAlg2.AxisY.Clear();
+            var yAxis = new Axis
             {
-                Title = "Доля времени",
                 MinValue = 0,
                 MaxValue = 1,
-                LabelFormatter = val => val.ToString("N1"),
-                Separator = new LiveCharts.Wpf.Separator { Step = 0.1 }
+                LabelFormatter = val => val.ToString("F2")
+            };
+
+            // Добавляем пунктирные линии только если теория уже рассчитана
+            if (theoProbs != null && theoProbs.Count == 3)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    yAxis.Sections.Add(new AxisSection
+                    {
+                        Value = theoProbs[i], // Константное значение по Y
+                        Stroke = StateColors[i],
+                        StrokeThickness = 2,
+                        StrokeDashArray = new DoubleCollection { 5, 3 }, // Пунктир
+                    });
+                }
+            }
+            chartAlg2.AxisY.Add(yAxis);
+
+            chartAlg2.AxisX.Clear();
+            chartAlg2.AxisX.Add(new Axis
+            {
+                Title = "Дни (Время)",
+                LabelFormatter = val => val.ToString("N0")
             });
         }
 
@@ -305,6 +337,9 @@ namespace SimulationLabs
 
             ResetSimulation();
             CalculateTheoreticalDistribution();
+
+            InitializeCharts(); // после вычисления теоретических характеристик 
+
             UpdateTheoreticalDisplay();
 
             // Скрыть надпись "нет истории"
@@ -345,11 +380,10 @@ namespace SimulationLabs
             totalTimeInState[1] = 0;
             totalTimeInState[2] = 0;
 
-            // Очистить графики
-            if (alg2Series.Count >= 2)
+            // Очистить графики - Loop through all series (Areas + Lines) to clear them
+            foreach (var series in alg2Series)
             {
-                alg2Series[0].Values = new ChartValues<double> { 0, 0, 0 };
-                alg2Series[1].Values = new ChartValues<double> { 0, 0, 0 };
+                series.Values.Clear();
             }
 
             // Очистить историю UI
@@ -361,8 +395,8 @@ namespace SimulationLabs
             }
 
             UpdateCurrentStateDisplay();
-            UpdateAlg2Chart();
-            chartAlg2.Update(true);
+            // No need to call UpdateAlg2Chart() here since we want the graph empty
+            chartAlg2.Update(true, true);
         }
 
         /// <summary>
@@ -545,50 +579,38 @@ namespace SimulationLabs
 
         /// <summary>
         /// Обновление графика алгоритмы 2: доля времени в каждом состоянии.
-        /// Троттлинг: обновление не чаще чем раз в 300мс.
+ 
         /// </summary>
         private long _lastAlg2UpdateMs = 0;
         private const long Alg2ThrottleMs = 300;
 
         private void UpdateAlg2Chart()
         {
-            double totalExact = totalTimeInState[0] + totalTimeInState[1] + totalTimeInState[2];
-
-            double pct0 = totalExact > 0 ? totalTimeInState[0] / totalExact : 0;
-            double pct1 = totalExact > 0 ? totalTimeInState[1] / totalExact : 0;
-            double pct2 = totalExact > 0 ? totalTimeInState[2] / totalExact : 0;
-
-            long nowMs = Environment.TickCount64;
-            if (nowMs - _lastAlg2UpdateMs < Alg2ThrottleMs) return;
-            _lastAlg2UpdateMs = nowMs;
-
-            lblAlg2Pct1.Text = $"Ясно: {pct0:F4}";
-            lblAlg2Pct2.Text = $"Облачно: {pct1:F4}";
-            lblAlg2Pct3.Text = $"Пасмурно: {pct2:F4}";
-
+            double totalExact = totalTimeInState.Sum();
+            if (totalExact <= 0) return;
             Dispatcher.Invoke(() =>
             {
-                if (alg2Series.Count >= 2)
+                // 1. Добавляем новую точку
+                for (int i = 0; i < 3; i++)
                 {
-                    alg2Series[0].Values = new ChartValues<double>
-                    {
-                        Math.Round(pct0, 4),
-                        Math.Round(pct1, 4),
-                        Math.Round(pct2, 4)
-                    };
+                    double share = totalTimeInState[i] / totalExact;
+                    alg2Series[i].Values.Add(new LiveCharts.Defaults.ObservablePoint(currentTime, share));
+                }
 
-                    if (theoProbs.Count == 3)
+                // 2. Удаляем старые, если превысили предел
+                if (alg2Series[0].Values.Count > 365)
+                {
+                    foreach (var s in alg2Series)
                     {
-                        alg2Series[1].Values = new ChartValues<double>
-                        {
-                            Math.Round(theoProbs[0], 4),
-                            Math.Round(theoProbs[1], 4),
-                            Math.Round(theoProbs[2], 4)
-                        };
+                        if (s.Values.Count > 0) s.Values.RemoveAt(0);
                     }
                 }
 
-                chartAlg2.Update(true);
+                // 3. САМОЕ ВАЖНОЕ: Двигаем видимую область оси X
+                // Чтобы ось всегда показывала последние 365 дней от текущего момента
+                var xAxis = chartAlg2.AxisX[0];
+                xAxis.MaxValue = currentTime;
+                xAxis.MinValue = currentTime - 365 > 0 ? currentTime - 365 : 0;
             });
         }
 
