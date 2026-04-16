@@ -180,20 +180,21 @@ namespace SimulationLabs
                 for (int i = 0; i < 5; i++) theoMean += (i + 1) * probs[i];
 
                 double theoVar = 0;
-                for (int i = 0; i < 5; i++) theoVar += Math.Pow((i + 1) - theoMean, 2) * probs[i];
+                for (int i = 0; i < 5; i++)
+                    theoVar += (i + 1) * (i + 1) * probs[i];
+                theoVar -= theoMean * theoMean;
 
                 // Генерация
                 Random rand = new Random();
                 int[] counts = new int[5];
-
+                // N испытаний 
                 for (int k = 0; k < N; k++)
                 {
-                    double r = rand.NextDouble();
-                    double cumulative = 0;
+                    double a = rand.NextDouble();
                     for (int i = 0; i < 5; i++)
                     {
-                        cumulative += probs[i];
-                        if (r < cumulative || i == 4)
+                        a -= probs[i];
+                        if (a <= 0)
                         {
                             counts[i]++;
                             break;
@@ -202,14 +203,16 @@ namespace SimulationLabs
                 }
 
                 // Эмпирические
+                double[] empProbs = new double[5];
+                for (int i = 0; i < 5; i++) empProbs[i] = (double) counts[i] / N;
+
                 double empMean = 0;
-                for (int i = 0; i < 5; i++) empMean += (i + 1) * counts[i];
-                empMean /= N;
+                for (int i = 0; i < 5; i++) empMean += (i + 1) * empProbs[i];
 
                 double empVar = 0;
                 for (int i = 0; i < 5; i++)
-                    empVar += Math.Pow((i + 1) - empMean, 2) * counts[i];
-                empVar /= (N - 1);
+                    empVar += (i+1) * (i+1) * empProbs[i];
+                empVar -= empMean * empMean;
 
                 // Хи-квадрат
                 double chiSq = 0;
@@ -217,12 +220,18 @@ namespace SimulationLabs
                 {
                     double expected = N * probs[i];
                     if (expected > 0)
-                        chiSq += Math.Pow(counts[i] - expected, 2) / expected;
+                        // из (n_i - N * probs[i])^2 / (N*probs[i])
+                        chiSq += (counts[i] * counts[i]) / (N * probs[i]);
                 }
+                chiSq -= N;
 
+                // Критическое значение (0.95 квантиль хи квадрат распределения с 4 степенями свободы
                 double criticalVal = 9.488;
+                // Есди меньше или равно, считаем что нет оснований отвергнуть нулевую гипотезу -
+                // о том что распределния не различаются
                 bool rejectH0 = chiSq > criticalVal;
 
+                // Относительные ошибки 
                 double errMean = (theoMean != 0) ? Math.Abs((empMean - theoMean) / theoMean) * 100 : 0;
                 double errVar = (theoVar != 0) ? Math.Abs((empVar - theoVar) / theoVar) * 100 : 0;
 
@@ -230,9 +239,9 @@ namespace SimulationLabs
                 resText += $"Дисперсия: {empVar:F3} (ошибка = {errVar:F1}%)\n";
                 resText += $"Хи-квадрат: {chiSq:F2} (крит. значение = {criticalVal})\n";
                 if (rejectH0)
-                    resText += $"Хи-квадрат > крит. значения → нулевая гипотеза отвергается: данные противоречат теоретическому распределению";
+                    resText += $"Хи-квадрат > крит. значения -> нулевая гипотеза отвергается: данные противоречат теоретическому распределению";
                 else
-                    resText += $"Хи-квадрат ≤ крит. значения → нет оснований отвергнуть нулевую гипотезу: данные не противоречат теоретическому распределению";
+                    resText += $"Хи-квадрат <= крит. значения -> нет оснований отвергнуть нулевую гипотезу: данные не противоречат теоретическому распределению";
                 lblResults.Text = resText;
 
                 // Обновление графика
@@ -240,10 +249,10 @@ namespace SimulationLabs
                 chart.Series["Теория"].Points.Clear();
                 chart.ChartAreas["MainArea"].AxisX.CustomLabels.Clear();
 
+                // Рисуем гистограмму
                 for (int i = 0; i < 5; i++)
                 {
-                    double freq = (double)counts[i] / N;
-                    chart.Series["Гистограмма"].Points.AddXY(i + 1, freq);
+                    chart.Series["Гистограмма"].Points.AddXY(i + 1, empProbs[i]);
                     chart.Series["Теория"].Points.AddXY(i + 1, probs[i]);
 
                     var cl = new CustomLabel(i + 0.5, i + 1.5, (i + 1).ToString(), 0, LabelMarkStyle.None);
