@@ -259,6 +259,8 @@ namespace SimulationLabs
                 double step = binWidth / 5.0;
                 for (double x = xMin; x <= xMax; x += step)
                 {
+                    // Если в эмпиричеком варианте мы использовали эмпирическую оценку, то здесь 
+                    // теоретическую 
                     double pdfVal = NormalPDF(x, mean, sigma);
                     chart.Series["Curve"].Points.AddXY(x, pdfVal * binWidth);
                 }
@@ -269,6 +271,7 @@ namespace SimulationLabs
             }
         }
         // Численное вычисление площади под кривой нормального распределения на интервале (~ -infty, x]
+        // Cumulitive distribution function - *вероятность* что случайная величина <= x
         private double NormalCDF(double x, double mean, double sigma)
         {
             // 1. Пределы интегрирования 
@@ -301,6 +304,7 @@ namespace SimulationLabs
             return area;
         }
         // Вычислить значение нормального распределение в точке x с параметрами mean и sigma 
+        // Probability density function - плотность в конкретной точке 
         private double NormalPDF(double x, double mean, double sigma)
         {
             return (1.0 / (sigma * Math.Sqrt(2.0 * Math.PI))) * Math.Exp(-0.5 * Math.Pow((x - mean) / sigma, 2));
