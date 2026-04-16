@@ -356,7 +356,15 @@ namespace SimulationLabs
 
             // Записываем начальное состояние (день 0.0)
             transitionHistory.Add(new TransitionRecord { Time = 0, State = currentState });
+            // Добавляем на график с алгоритмом 2
+            int startIdx = currentState - 1;
+            for (int i = 0; i < 3; i++)
+            {
+                double share = (i == startIdx) ? 1.0 : 0.0;
+                alg2Series[i].Values.Add(new LiveCharts.Defaults.ObservablePoint(0, share));
+            }
             UpdateTransitionList();
+
 
             isRunning = true;
             btnStart.IsEnabled = false;
