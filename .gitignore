@@ -1,2 +1,22 @@
-# Examples 1 and 2 show that only source/config files were added (README.md), which should result in an empty .gitignore.
-# Since only a README.md file was added and no build artifacts, dependencies, or temp files are present, no ignores are needed.
+# === Visual Studio ===
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.csproj.user
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+*.dll
+*.exe
+*.pdb
+*.log
+*.cache
+nul
